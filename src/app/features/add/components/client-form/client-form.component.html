@@ -1,0 +1,220 @@
+<form [formGroup]="clientForm" (ngSubmit)="onSubmitClient()">
+    <p-splitter layout="vertical">
+      <ng-template pTemplate>
+        <p-splitter layout="horizontal">
+          <ng-template pTemplate>
+            <div class="col grid align-items-center row-gap-2 p-3">
+              <header class="font-bold">Dane osobowe:</header>
+
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <i
+                    class="pi pi-user"
+                    pTooltip="Imię"
+                  ></i>
+                </p-inputGroupAddon>
+
+                <input
+                  pInputText
+                  placeholder="Imię"
+                  formControlName="name"
+                  [class.ng-invalid.ng-dirty]="
+                    name?.invalid && (name?.dirty || name?.touched)
+                  "
+                />
+
+                <p-inputGroupAddon>
+                  <i
+                    style="color: rgb(105, 113, 19)"
+                    class="pi pi-exclamation-circle ml-1"
+                    pTooltip="To pole jest wymagane"
+                  ></i>
+                </p-inputGroupAddon>
+              </p-inputGroup>
+
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <i class="pi pi-users"></i>
+                </p-inputGroupAddon>
+                <input
+                  pInputText
+                  placeholder="Nazwisko"
+                  formControlName="surname"
+                />
+                <p-inputGroupAddon>
+                  <i
+                    *ngIf="
+                      name?.invalid && (name?.dirty || name?.touched)
+                    "
+                    style="color: rgb(184, 26, 26)"
+                    class="pi pi-exclamation-triangle ml-1"
+                    pTooltip="Uzupełnij brakujące pola"
+                  ></i>
+                  <i
+                    [class.hidden]="
+                      name?.invalid && (name?.dirty || name?.touched)
+                    "
+                    style="color: rgb(105, 113, 19)"
+                    class="pi pi-exclamation-circle ml-1"
+                    pTooltip="To pole jest wymagane"
+                  ></i>
+                </p-inputGroupAddon>
+              </p-inputGroup>
+
+              <p-inputGroup>
+                <p-inputGroupAddon>
+                  <i class="pi pi-id-card"></i>
+                </p-inputGroupAddon>
+                <input
+                  pInputText
+                  placeholder="Numer PESEL"
+                  formControlName="personalNumber"
+                />
+                <p-inputGroupAddon>
+                  <i
+                    *ngIf="
+                      name?.invalid && (name?.dirty || name?.touched)
+                    "
+                    style="color: rgb(184, 26, 26)"
+                    class="pi pi-exclamation-triangle ml-1"
+                    pTooltip="Uzupełnij brakujące pola"
+                  ></i>
+                  <i
+                    [class.hidden]="
+                      name?.invalid && (name?.dirty || name?.touched)
+                    "
+                    style="color: rgb(105, 113, 19)"
+                    class="pi pi-exclamation-circle ml-1"
+                    pTooltip="To pole jest wymagane"
+                  ></i>
+                </p-inputGroupAddon>
+              </p-inputGroup>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate>
+            <div
+              class="col flex-column align-items-center justify-content-center"
+            >
+              <div>
+                <header class="font-bold">Dane kontaktowe:</header>
+              </div>
+
+              <div class="mt-2">
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="pi pi-phone"></i>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    placeholder="Numer telefonu"
+                    formControlName="phoneNumber"
+                  />
+                  <p-inputGroupAddon>
+                    <i
+                      *ngIf="
+                        name?.invalid && (name?.dirty || name?.touched)
+                      "
+                      style="color: rgb(184, 26, 26)"
+                      class="pi pi-exclamation-triangle ml-1"
+                      pTooltip="Uzupełnij brakujące pola"
+                    ></i>
+                    <i
+                      [class.hidden]="
+                        name?.invalid && (name?.dirty || name?.touched)
+                      "
+                      style="color: rgb(105, 113, 19)"
+                      class="pi pi-exclamation-circle ml-1"
+                      pTooltip="To pole jest wymagane"
+                    ></i>
+                  </p-inputGroupAddon>
+                </p-inputGroup>
+              </div>
+
+              <div class="mt-2">
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="pi pi-at"></i>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    placeholder="Adres email"
+                    formControlName="emailAddress"
+                  />
+                </p-inputGroup>
+              </div>
+            </div>
+          </ng-template>
+        </p-splitter>
+      </ng-template>
+
+      <ng-template pTemplate>
+        <p-accordion
+          class="col-12"
+          expandIcon="pi pi-plus"
+          collapseIcon="pi pi-minus"
+        >
+          <p-accordionTab header="Dane adresowe (opcjonalne)">
+            <div class="flex flex-row">
+              <p-inputGroupAddon>
+                <i class="pi pi-globe"></i>
+              </p-inputGroupAddon>
+
+              <p-dropdown
+                [options]="countries"
+                formControlName="country"
+                placeholder="Kraj"
+                [editable]="true"
+                optionLabel="name"
+                class="w-2 mr-2"
+                appendTo="body"
+              />
+
+              <p-inputGroupAddon>
+                <i class="pi pi-building"></i>
+              </p-inputGroupAddon>
+              <input
+                pInputText
+                placeholder="Miejscowość"
+                formControlName="city"
+                class="mr-3"
+              />
+
+              <p-inputGroupAddon>
+                <i class="pi pi-map-marker"></i>
+              </p-inputGroupAddon>
+              <input
+                pInputText
+                placeholder="Ulica"
+                formControlName="street"
+                class="mr-3"
+              />
+
+              <p-inputGroupAddon>
+                <i class="pi pi-envelope"></i>
+              </p-inputGroupAddon>
+              <input
+                pInputText
+                placeholder="Kod pocztowy"
+                formControlName="postalCode"
+                class="mr-3"
+              />
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </ng-template>
+    </p-splitter>
+
+    <button
+      pButton
+      type="submit"
+      label="Dodaj Klienta"
+      [disabled]="clientForm.invalid"
+    ></button>
+    <i
+      *ngIf="clientForm.invalid"
+      style="color: rgb(184, 26, 26)"
+      class="pi pi-exclamation-circle ml-1"
+      pTooltip="Uzupełnij brakujące pola"
+    ></i>
+  </form>

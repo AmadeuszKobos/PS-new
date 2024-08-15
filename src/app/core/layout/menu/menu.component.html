@@ -1,0 +1,85 @@
+<div
+  class="relative flex flex-column h-full"
+  [ngClass]="{
+    'w-7rem': menuWrapped,
+    'w-15rem': !menuWrapped,
+    'mr-0 !important': menuWrapped
+  }"
+>
+  <div class="menu-container flex flex-grow-1">
+    <div
+      class="flex flex-column align-items-center justify-content-center mb-2 h-10rem"
+    >
+      <div>
+        <p-avatar label="A" size="xlarge" styleClass=""></p-avatar>
+      </div>
+      <div class="flex profile-info">
+        <p *ngIf="!menuWrapped">Witaj, Amadeusz 👋</p>
+      </div>
+    </div>
+    <div>
+      <p-menu
+        [model]="items"
+        class="flex"
+        [ngClass]="{ wrapMenu: menuWrapped }"
+        styleClass="text-md align-items-center flex-grow-1"
+      ></p-menu>
+    </div>
+    <div class="w-full flex align-items-center justify-content-evenly p-2">
+      <p-button
+        [ngClass]=""
+        icon="pi pi-bars"
+        [rounded]="true"
+        severity="secondary"
+        (onClick)="toggleMenu()"
+      />
+    </div>
+  </div>
+
+  <div
+    class="menu-container w-full flex flex-row align-items-center justify-content-evenly h-7rem"
+  >
+    <p-button
+      icon="pi pi-info-circle"
+      [rounded]="true"
+      severity="info"
+      *ngIf="!menuWrapped; else optionsWrapped"
+    />
+    <p-button
+      icon="pi pi-google"
+      [rounded]="true"
+      severity="primary"
+      *ngIf="!menuWrapped"
+    />
+    <p-button
+      icon="pi pi-stopwatch"
+      [rounded]="true"
+      severity="warning"
+      *ngIf="!menuWrapped"
+    />
+
+    <ng-template #optionsWrapped>
+      <div class="w-full flex align-items-center justify-content-evenly p-2">
+        <p-button icon="pi pi-ellipsis-v" (onClick)="ow.toggle($event)" severity="secondary"/>
+      </div>
+
+      <p-overlayPanel #ow>
+        <div class="w-full flex align-items-center justify-content-evenly">
+          <p-button
+            icon="pi pi-info-circle"
+            [rounded]="true"
+            severity="info"
+          />
+
+          <p-button icon="pi pi-google" [rounded]="true" severity="success" />
+
+          <p-button
+            icon="pi pi-stopwatch"
+            [rounded]="true"
+            severity="warning"
+          />
+        </div>
+      </p-overlayPanel>
+    </ng-template>
+  </div>
+</div>

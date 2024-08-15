@@ -1,0 +1,15 @@
+<div class="flex h-full">
+  <div class="flex w-9 h-full align-items-center justify-items-center">
+    <div
+      class="flex scroll max-h-10rem align-items-center justify-items-center w-5"
+      *ngFor="let info of informations"
+    >
+      <div class="w-10">
+        <p-fieldset legend="{{info.topic}}">
+            {{info.content | slice:0:100}}...
+        </p-fieldset>
+      </div>
+    </div>
+  </div>
+  <div>Dodaj</div>
+</div>

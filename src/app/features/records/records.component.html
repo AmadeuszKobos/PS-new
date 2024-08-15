@@ -1,0 +1,69 @@
+<div class="h-full p-3">
+  <p-panel class="h-full" header="Kartoteka">
+    <div class="h-full overflow-scroll">
+      <p-table
+      [value]="personsRegister"
+      [first]="first"
+      [rows]="rows"
+      [rowsPerPageOptions]="[10, 20, 30]"
+      [totalRecords]="personsRegister.length"
+      styleClass="p-datatable-gridlines"
+      [scrollable]="true"
+      [paginator]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="w-3">Imię i nazwisko</th>
+          <th class="w-1">Zastawione rzeczy</th>
+          <th class="w-2">Email</th>
+          <th class="w-2">Numer telefonu</th>
+          <th class="w-1">Możliwość transkacji</th>
+          <th class="w-3">Notatki</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-personRegister>
+        <tr>
+          <td>{{ personRegister.name }}</td>
+          <td>
+            Ilość: <b>{{ personRegister.pawned }}</b>
+          </td>
+          <td
+            [class.font-italic]="personRegister.email == ''"
+            [class.text-bluegray-300]="personRegister.email == ''"
+          >
+            {{ personRegister.email || "nie podano" }}
+          </td>
+          <td
+            [class.font-italic]="personRegister.phoneNumber == ''"
+            [class.text-bluegray-300]="personRegister.phoneNumber == ''"
+          >
+            {{ personRegister.phoneNumber }}
+          </td>
+          <td>
+            <i
+              *ngIf="personRegister.blacklistFlag; else noBlacklist"
+              class="pi pi-times-circle"
+              [ngStyle]="{ color: 'var(--red-600)' }"
+            ></i>
+
+            <ng-template #noBlacklist>
+              <i
+                class="pi pi-check-circle"
+                [ngStyle]="{ color: 'var(--green-600)' }"
+              ></i>
+            </ng-template>
+          </td>
+          <td
+            [class.font-italic]="personRegister.notes == ''"
+            [class.text-bluegray-300]="personRegister.notes == ''"
+          >
+            {{ personRegister.notes || "Brak opisu" }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    </div>
+    
+  </p-panel>
+</div>

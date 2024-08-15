@@ -1,0 +1,19 @@
+::ng-deep .p-button {
+  margin-top: 1%;
+}
+
+::ng-deep .p-inputGroup {
+  margin-top: 1%;
+}
+
+::ng-deep .p-dropdown-panel {
+  width: 80%;
+}
+
+.p-tabview .p-tabview-nav {
+  background-color: #04aa6d;
+}
+
+.p-tabview .p-tabview-nav .p-tabview-selected a {
+  color: white !important;
+}

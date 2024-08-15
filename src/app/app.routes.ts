@@ -1,3 +1,22 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from './core/auth/pages/login/login.component';
+import { authGuard } from './core/auth/auth.guard';
+import { LayoutComponent } from './core/layout/layout.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // Domyślne przekierowanie
+  { path: 'login', component: LoginComponent },
+  {
+    path: '',
+    component: LayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'add', loadComponent: () => import('./features/add/pages/add.component').then(m => m.AddComponent) },
+      { path: 'warehouse', loadComponent: () => import('./features/warehouse/pages/warehouse/warehouse.component').then(m => m.WarehouseComponent) },
+      { path: 'records', loadComponent: () => import('./features/records/records.component').then(m => m.RecordsComponent) },
+      { path: 'settings', loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent) },
+    ]
+  },
+  { path: '**', redirectTo: '/login' } // Catch-all przekierowanie
+];

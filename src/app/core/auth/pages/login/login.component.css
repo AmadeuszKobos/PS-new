@@ -1,0 +1,95 @@
+/* Podstawowe style */
+
+body {
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.grid {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.col-12 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.surface-card {
+  width: 100%;
+  background: transparent;
+  color: #302f2f;
+  padding: 20px;
+  margin: 0;
+  border: none;
+  border-radius: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+ul {
+  padding: 10%, 10%;
+}
+
+li {
+  font-size: large;
+  margin-bottom: 2%;
+}
+
+/* Styl dla błędnych pól */
+input.invalid {
+  border: 1px solid #f44336; /* Czerwone obramowanie dla błędnych pól */
+  background-color: #fdd; /* Jasnoczerwone tło dla błędnych pól */
+}
+
+/* Styl dla komunikatów o błędach */
+.error-message {
+  color: #f44336; /* Czerwony kolor dla komunikatów o błędach */
+  font-size: 0.875rem; /* Mniejsza czcionka dla komunikatów */
+}
+
+/* Media Queries */
+
+/* Małe urządzenia (telefony w orientacji pionowej, do 600px) */
+@media (max-width: 600px) {
+  .col-12 {
+    padding: 10px;  /* Dodajemy padding w małych urządzeniach dla lepszego odstępu od krawędzi */
+  }
+
+  .surface-card {
+    padding: 10px;  /* Zmniejszamy padding w kartach dla lepszej przestrzeni użytkowej */
+  }
+}
+
+/* Średnie urządzenia (tablety, od 601px do 900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+  .col-12 {
+    max-width: 500px;  /* Zmniejszamy maksymalną szerokość dla tabletów */
+  }
+}
+
+/* Duże urządzenia (laptopy/desktops, od 901px) */
+@media (min-width: 901px) {
+  .col-12 {
+    max-width: 600px;  /* Ustalamy maksymalną szerokość dla dużych ekranów */
+  }
+}
+

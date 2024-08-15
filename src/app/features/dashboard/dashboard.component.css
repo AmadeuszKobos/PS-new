@@ -1,0 +1,31 @@
+::ng-deep .p-panel, ::ng-deep .p-toogleable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+::ng-deep .p-toggleable-content {
+    flex-grow: 1;
+    height: 100%;
+}
+
+::ng-deep .p-panel-content {
+    height: 100%;
+    padding: 0;
+}
+
+::ng-deep .p-fieldset .p-fieldset-content {
+    display: flex;
+}
+
+::ng-deep .p-fieldset:first-child, ::ng-deep .p-fieldset-content{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+}
+
+.h-50 {
+    height: 50%;
+}
+

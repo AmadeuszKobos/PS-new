@@ -1,0 +1,7 @@
+::ng-deep .p-carousel-indicators{
+    display: none;
+}
+
+::ng-deep .p-datepicker {
+    z-index: 100;
+}

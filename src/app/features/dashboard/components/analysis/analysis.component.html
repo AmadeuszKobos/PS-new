@@ -1,0 +1,42 @@
+<div class="w-5">
+  <p-chart type="pie" [data]="data" [options]="options" class="w-1" />
+</div>
+
+<div class="flex flex-column flex-grow-1 align-items-end justify-items-end">
+  <div class="text-xs xl:text-base">
+    <form [formGroup]="analysisForm" (ngSubmit)="onSubmitAnalysis()">
+      <div>
+        <label for="dateFrom" class="font-bold block mb-2"> Data od: </label>
+        <p-calendar
+          formControlName="dateFrom"
+          [showIcon]="true"
+          [showOnFocus]="false"
+          inputId="dateFrom"
+        />
+      </div>
+
+      <div>
+        <label for="dateTo" class="font-bold block mb-2"> Data od: </label>
+        <p-calendar
+          formControlName="dateTo"
+          [showIcon]="true"
+          [showOnFocus]="false"
+          inputId="dateTo"
+        />
+      </div>
+
+
+      <div class="flex justify-content-end">
+        <button
+          pButton
+          type="submit"
+          label="Pobierz dane"
+          [disabled]="analysisForm.invalid"
+          class="mt-2 text-sm"
+          icon="pi pi-database"
+          size="small"
+        ></button>
+      </div>
+    </form>
+  </div>
+</div>

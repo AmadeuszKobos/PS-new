@@ -1,0 +1,33 @@
+.menu-container {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1vw 0 1vw 1vw;
+  box-sizing: border-box;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .p-menu{
+  background-color: var(--surface-200); /* Kolor tła dla samego p-menu */
+  border-radius: 5% !important; /* Zaokrąglenie rogów */
+  width: auto;
+}
+
+.wrapMenu > ::ng-deep .p-menu a{
+  display: flex;
+  flex-direction: column;
+  font-size: .7rem;
+  text-align: center;
+}
+
+.wrapMenu > ::ng-deep .p-menu span{
+  margin-right: 0;
+}
+
+
+
+

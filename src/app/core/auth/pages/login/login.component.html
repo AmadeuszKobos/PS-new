@@ -1,0 +1,52 @@
+<p-toast position="bottom-center">Adasdas</p-toast>
+<div class="login-screen grid">
+  <div class="col-12 lg:col-6 p-4">
+    <div class="surface-card p-4 border-round shadow-2">
+      <h1>Witaj na stronie logowania</h1>
+      <div class="text-700 mt-3">
+        <h3>Ważne</h3>
+        <ul>
+          <li>upoważnienie do korzystania z aplikacji są <b>tylko</b> pracownicy lombardu</li>
+          <li>logujesz się za pomocą <b>maila podanego pracodawcy</b></li>
+          <li>jeśli to twoje <u>pierwsze logowanie</u> użyj hasła otrzymanego na podaną skrzynkę mailową</li>
+          <li>w przypadku zapomnienia lub wycieku twojego hasła sytuacje <b>natychmiast zgłoś pracodawcy!!!</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6 p-4">
+    <div class="surface-card p-4 border-round shadow-2">
+      <h2 class="text-center">Zaloguj się</h2>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="flex flex-column gap-2">
+          <label for="username">Nazwa użytkownika</label>
+          <input 
+            pInputText 
+            id="username" 
+            formControlName="username" 
+            aria-describedby="username-help"
+            [class.invalid]="username?.invalid && (username?.dirty || username?.touched)"
+          />
+          <small *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-message">
+            Pole jest wymagane.
+          </small>
+        </div>
+        <div class="flex flex-column gap-2">
+          <label for="password">Hasło</label>
+          <input 
+            pInputText 
+            id="password" 
+            formControlName="password" 
+            aria-describedby="password-help"
+            type="password" 
+            [class.invalid]="password?.invalid && (password?.dirty || password?.touched)"
+          />
+          <small *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-message">
+            Pole jest wymagane.
+          </small>
+        </div>
+        <button pButton type="submit" label="Login" class="mt-3"></button>
+      </form>
+    </div>
+  </div>
+</div>

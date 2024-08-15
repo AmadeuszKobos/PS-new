@@ -1,0 +1,40 @@
+<div class="h-full p-3">
+  <p-panel class="h-full flex flex-column" header="Panel główny">
+    <div id="main-container" class="h-full md:flex lg:flex-row sm:flex-column">
+      <div id="left-side" class="xl:flex flex-column xl:w-5 w-full">
+        <!-- Wykresy -->
+        <div id="chart" class="flex w-full h-50">
+          <p-fieldset
+            legend="Podsumowanie wyników"
+            class="flex overflow-hidden w-full p-2"
+          >
+            <app-analysis class="xl:flex w-full" />
+          </p-fieldset>
+        </div>
+
+        <!-- Notatki -->
+        <div id="Notes" class="flex flex-grow-1 w-full p-2 h-50">
+          <p-fieldset legend="Notatki" class="w-full">
+            <app-notes class="w-full h-full" />
+          </p-fieldset>
+        </div>
+      </div>
+
+      <div id="right-side" class="flex flex-column flex-column flex-grow-1 w-7">
+        <!-- Ostatnio modyfikowane -->
+        <div id="modified-lately" class="flex flex-grow-1 w-full p-2 h-50">
+          <p-fieldset legend="Ostatnio modyfikowane przedmioty" class="w-full">
+            <app-lately-modified class="w-full h-full" />
+          </p-fieldset>
+        </div>
+
+        <!-- Informacje ogólne -->
+        <div id="info" class="flex w-full p-2 h-50">
+          <p-fieldset legend="Informacje ogólne" class="w-full">
+            <app-informations class="w-full h-full" />
+          </p-fieldset>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+</div>

@@ -1,0 +1,13 @@
+<div class="h-full p-3">
+  <p-panel class="min-h-screen" header="Dodaj">
+    <p-tabView>
+      <p-tabPanel header="Klient">
+        <app-client-form/>
+      </p-tabPanel>
+
+      <p-tabPanel header="Towar">
+        <app-add-item-form [addMode]="true"></app-add-item-form>
+      </p-tabPanel>
+    </p-tabView>
+  </p-panel>
+</div>
