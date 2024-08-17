@@ -3,6 +3,9 @@ export enum OperationTypeEnum {
     Purchase = 1,
     Sale = 2,
     Pawn = 3,
-    Repossession = 4,
+    Repossesion = 4,
+    Extension = 5,
+    Update = 6,
+    Delete = 7,
 }
 

@@ -4,27 +4,88 @@
       <p-button
         class="m-2"
         label=""
-        icon="pi pi-pen-to-square"
-        (onClick)="showDialog()"
+        icon="pi pi-shopping-cart"
+        (onClick)="showSaleDialog()"
         [disabled]="!selectedRowItem"
       />
 
-      <p-dialog header="Edytuj towar" [(visible)]="visible" [modal]="true">
-        <app-add-item-form [editMode]="true" [itemForEdit] = "itemForEdit"/>
+      <p-dialog
+        header="Formularz sprzedażowy"
+        [(visible)]="saleFormVisible"
+        [modal]="true"
+      >
+        <app-sale-form />
       </p-dialog>
 
-      <p-button class="m-2" label="" icon="pi pi-trash" [disabled]="!selectedRowItem"/>
-      <p-button class="m-2" label="" icon="pi pi-eye" [disabled]="!selectedRowItem"/>
+      <p-button
+        class="m-2"
+        label=""
+        icon="pi pi-pen-to-square"
+        (onClick)="showEditDialog()"
+        [disabled]="!selectedRowItem"
+      />
+
+      <p-dialog
+        header="Edytuj towar"
+        [(visible)]="editFormVisibile"
+        [modal]="true"
+      >
+        <app-add-item-form [editMode]="true" [itemForEdit]="itemForEdit" />
+      </p-dialog>
+
+      <p-button
+        class="m-2"
+        icon="pi pi-trash"
+        [disabled]="!selectedRowItem"
+        (onClick)="confirmDelete($event)"
+      />
+
+      <p-confirmDialog #cd>
+        <ng-template pTemplate="headless" let-message>
+          <div class="flex flex-column align-items-center p-5 surface-overlay border-round">
+              <div class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem">
+                  <i class="pi pi-exclamation-triangle text-5xl"></i>
+              </div>
+              <span class="font-bold text-2xl block mb-2 mt-4">
+                  {{ message.header }}
+              </span>
+              <p class="mb-0">{{ message.message }}</p>
+              <div class="flex align-items-center gap-2 mt-4">
+                  <button 
+                      pButton 
+                      label="Usuń" 
+                      (click)="cd.accept()" 
+                      class="w-8rem">
+                  </button>
+                  <button 
+                      pButton 
+                      label="Anuluj"
+                      (click)="cd.reject()" 
+                      class="p-button-outlined w-8rem ">
+                  </button>
+              </div>
+          </div>
+      </ng-template>
+      </p-confirmDialog>
+
+      <p-button
+        class="m-2"
+        label=""
+        icon="pi pi-history"
+        [disabled]="!selectedRowItem"
+        (onClick)="nagivateToItemHistory()"
+      />
+
+
     </div>
 
     <p-table
       [value]="itemsRegister"
       selectionMode="single"
       stateStorage="session"
+      [(selection)]="selectedRowItem"
       [first]="first"
       [rows]="rows"
-      [(selection)]="selectedRowItem"
-      dataKey="id"
       [rowsPerPageOptions]="[10, 20, 30]"
       [totalRecords]="itemsRegister.length"
       styleClass="p-datatable-gridlines"
@@ -53,10 +114,7 @@
       </ng-template>
 
       <ng-template pTemplate="body" let-itemRegister>
-        <tr
-          #itemRow
-          [pSelectableRow]="itemRegister"
-        >
+        <tr #itemRow [pSelectableRow]="itemRegister">
           <td class="w-1rem surface-100">
             <i class="pi pi-angle-right"></i>
           </td>
@@ -75,9 +133,9 @@
           </td>
           <td class="w-1rem">
             <i
-              [class]="conditionStates[itemRegister.conditionId-1 || 0].icon"
+              [class]="conditionStates[itemRegister.conditionId - 1 || 0].icon"
               [style.color]="
-                conditionStates[itemRegister.conditionId-1 || 0].color
+                conditionStates[itemRegister.conditionId - 1 || 0].color
               "
             ></i>
           </td>

@@ -1,28 +1,25 @@
+::ng-deep .p-button {
+  margin-top: 1%;
+}
 
-    
-  ::ng-deep .p-button {
-    margin-top: 1%;
-  }
+::ng-deep .p-inputGroup {
+  margin-top: 1%;
+}
 
-  ::ng-deep .p-inputGroup {
-    margin-top: 1%;
-  }
+.p-tabview .p-tabview-nav {
+  background-color: #04aa6d;
+}
 
+.p-tabview .p-tabview-nav .p-tabview-selected a {
+  color: white !important;
+}
 
+th,
+td {
+  text-align: center;
+  padding: 0.7rem;
+}
 
-  .p-tabview .p-tabview-nav {
-    background-color: #04AA6D;
-  }
-  
-  .p-tabview .p-tabview-nav .p-tabview-selected a {
-    color: white !important;
-  }
-
-  th, td{
-    text-align: center;
-    padding: 0.7rem;
-  }
-
-  th{
-    padding: 0.3rem;
-  }
+th {
+  padding: 0.3rem;
+}

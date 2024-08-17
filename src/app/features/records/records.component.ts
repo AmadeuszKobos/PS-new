@@ -5,27 +5,49 @@ import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { RecordsService } from './services/records.service';
 import { PersonsRegister } from './models/person-register.model';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { ClientFormComponent } from '../add/components/client-form/client-form.component';
 
 @Component({
   selector: 'app-records',
   standalone: true,
-  imports: [CommonModule, PanelModule, PaginatorModule, TableModule],
+  imports: [
+    CommonModule,
+    PanelModule,
+    PaginatorModule,
+    TableModule,
+    ButtonModule,
+    DialogModule,
+    ClientFormComponent,
+  ],
   templateUrl: './records.component.html',
-  styleUrl: './records.component.css'
+  styleUrl: './records.component.css',
 })
-export class RecordsComponent implements OnInit{
+export class RecordsComponent implements OnInit {
   personsRegister: PersonsRegister[] = [];
 
-  constructor(private recordsService: RecordsService) {}
-  
+  visible: boolean = false;
+
+  selectedClient!: any;
+
   first: number = 0;
   rows: number = 10;
+
+  constructor(private recordsService: RecordsService) {}
 
   ngOnInit(): void {
     this.getClientsRegisterList();
   }
 
-  getClientsRegisterList(){
+  showDialog() {
+    this.visible = true;
+
+    //this.getItem();
+    console.log(this.selectedClient)
+  }
+
+  getClientsRegisterList() {
     this.recordsService.getPersons().subscribe({
       next: (personRegisterList: PersonsRegister[]) => {
         this.personsRegister = personRegisterList;
@@ -35,5 +57,4 @@ export class RecordsComponent implements OnInit{
         console.log('Observable emitted the complete notification'),
     });
   }
-
 }

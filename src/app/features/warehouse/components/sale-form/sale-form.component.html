@@ -1,0 +1,36 @@
+<form [formGroup]="saleForm" (ngSubmit)="onSubmitSale()">
+  <div class="col grid align-items-center row-gap-2 p-3">
+    <header class="font-bold">Formularz sprzedażowy:</header>
+
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-box" pTooltip="Imię"></i>
+      </p-inputGroupAddon>
+
+      <input pInputText placeholder="Nazwa" formControlName="name" />
+    </p-inputGroup>
+
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-user"></i>
+      </p-inputGroupAddon>
+
+      <input pInputText placeholder="Klient" formControlName="clientId" />
+    </p-inputGroup>
+
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-dollar"></i>
+      </p-inputGroupAddon>
+
+      <input pInputText placeholder="Przychód" formControlName="clientId" />
+    </p-inputGroup>
+  </div>
+
+  <button
+    pButton
+    type="submit"
+    label="Sprzedaj"
+    [disabled]="saleForm.invalid"
+  ></button>
+</form>

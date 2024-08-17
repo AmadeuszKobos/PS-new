@@ -1,8 +1,32 @@
 <div class="h-full p-3">
-  <p-panel class="h-full" header="Kartoteka">
-    <div class="h-full overflow-scroll">
-      <p-table
+  <p-panel class="min-h-screen" header="Kartoteka">
+    <div class="flex w-full algin-items-end justify-content-end">
+      <p-button class="m-2" icon="pi pi-ban" [disabled]="!selectedClient" />
+      <p-button
+        class="m-2"
+        label=""
+        icon="pi pi-pen-to-square"
+        (onClick)="showDialog()"
+        [disabled]="!selectedClient"
+      />
+
+      <p-dialog
+        header="Edytuj dane klienta"
+        [(visible)]="visible"
+        [modal]="true"
+      >
+        <app-client-form />
+      </p-dialog>
+
+      <p-button class="m-2" icon="pi pi-trash" [disabled]="!selectedClient" />
+      <p-button class="m-2" icon="pi pi-list" [disabled]="!selectedClient" />
+    </div>
+
+    <p-table
       [value]="personsRegister"
+      selectionMode="single"
+      stateStorage="session"
+      [(selection)]="selectedClient"
       [first]="first"
       [rows]="rows"
       [rowsPerPageOptions]="[10, 20, 30]"
@@ -13,6 +37,7 @@
     >
       <ng-template pTemplate="header">
         <tr>
+          <th></th>
           <th class="w-3">Imię i nazwisko</th>
           <th class="w-1">Zastawione rzeczy</th>
           <th class="w-2">Email</th>
@@ -23,7 +48,10 @@
       </ng-template>
 
       <ng-template pTemplate="body" let-personRegister>
-        <tr>
+        <tr [pSelectableRow]="personRegister">
+          <td class="w-1rem surface-100">
+            <i class="pi pi-angle-right"></i>
+          </td>
           <td>{{ personRegister.name }}</td>
           <td>
             Ilość: <b>{{ personRegister.pawned }}</b>
@@ -63,7 +91,5 @@
         </tr>
       </ng-template>
     </p-table>
-    </div>
-    
   </p-panel>
 </div>
