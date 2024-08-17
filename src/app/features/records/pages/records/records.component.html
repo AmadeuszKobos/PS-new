@@ -1,7 +1,45 @@
 <div class="h-full p-3">
   <p-panel class="min-h-screen" header="Kartoteka">
     <div class="flex w-full algin-items-end justify-content-end">
-      <p-button class="m-2" icon="pi pi-ban" [disabled]="!selectedClient" />
+      <p-button
+        class="m-2"
+        icon="pi pi-unlock"
+        [disabled]="!selectedClient"
+        (onClick)="confirmBlacklistAction($event)"
+      />
+
+      <p-confirmDialog #cd>
+        <ng-template pTemplate="headless" let-message>
+          <div
+            class="flex flex-column align-items-center p-5 surface-overlay border-round"
+          >
+            <div
+              class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem"
+            >
+              <i class="pi {{ message.icon }} text-5xl"></i>
+            </div>
+            <span class="font-bold text-2xl block mb-2 mt-4">
+              {{ message.header }}
+            </span>
+            <p class="mb-0">{{ message.message }}</p>
+            <div class="flex align-items-center gap-2 mt-4">
+              <button
+                pButton
+                label="Zablokuj"
+                (click)="cd.accept()"
+                class="w-8rem"
+              ></button>
+              <button
+                pButton
+                label="Anuluj"
+                (click)="cd.reject()"
+                class="p-button-outlined w-8rem"
+              ></button>
+            </div>
+          </div>
+        </ng-template>
+      </p-confirmDialog>
+
       <p-button
         class="m-2"
         label=""
@@ -18,8 +56,19 @@
         <app-client-form />
       </p-dialog>
 
-      <p-button class="m-2" icon="pi pi-trash" [disabled]="!selectedClient" />
-      <p-button class="m-2" icon="pi pi-list" [disabled]="!selectedClient" />
+      <p-button
+        class="m-2"
+        icon="pi pi-folder-open"
+        [disabled]="!selectedClient"
+        (onClick)="confirmArchiveAction($event)"
+      />
+
+      <p-button
+        class="m-2"
+        icon="pi pi-list"
+        [disabled]="!selectedClient"
+        (onClick)="navigateToClientHistory()"
+      />
     </div>
 
     <p-table
@@ -71,13 +120,13 @@
           <td>
             <i
               *ngIf="personRegister.blacklistFlag; else noBlacklist"
-              class="pi pi-times-circle"
+              class="pi pi-lock"
               [ngStyle]="{ color: 'var(--red-600)' }"
             ></i>
 
             <ng-template #noBlacklist>
               <i
-                class="pi pi-check-circle"
+                class="pi pi-lock-open"
                 [ngStyle]="{ color: 'var(--green-600)' }"
               ></i>
             </ng-template>

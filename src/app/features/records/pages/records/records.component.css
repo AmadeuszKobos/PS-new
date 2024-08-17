@@ -1,5 +1,5 @@
-::ng-deep p-toggleable-content {
-  height: 100%;
+::ng-deep .p-panel-content {
+  padding: 0.5rem;
 }
 
 ::ng-deep .p-button {

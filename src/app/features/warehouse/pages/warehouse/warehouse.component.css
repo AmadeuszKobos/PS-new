@@ -6,6 +6,10 @@
   margin-top: 1%;
 }
 
+::ng-deep .p-panel-content {
+  padding: 0.5rem;
+}
+
 .p-tabview .p-tabview-nav {
   background-color: #04aa6d;
 }

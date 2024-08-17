@@ -15,9 +15,8 @@
                 pInputText
                 placeholder="Imię"
                 formControlName="name"
-                [class.ng-invalid.ng-dirty]="
-                  name?.invalid && (name?.dirty || name?.touched)
-                "
+                [pTooltip]="getError('name')"
+                tooltipPosition="bottom"
               />
             </p-inputGroup>
 
@@ -29,6 +28,8 @@
                 pInputText
                 placeholder="Nazwisko"
                 formControlName="surname"
+                [pTooltip]="getError('surname')"
+                tooltipPosition="bottom"
               />
             </p-inputGroup>
 
@@ -40,6 +41,8 @@
                 pInputText
                 placeholder="Numer PESEL"
                 formControlName="personalNumber"
+                [pTooltip]="getError('personalNumber')"
+                tooltipPosition="bottom"
               />
             </p-inputGroup>
           </div>
@@ -62,6 +65,8 @@
                   pInputText
                   placeholder="Numer telefonu"
                   formControlName="phoneNumber"
+                  [pTooltip]="getError('phoneNumber')"
+                  tooltipPosition="bottom"
                 />
               </p-inputGroup>
             </div>
@@ -73,8 +78,10 @@
                 </p-inputGroupAddon>
                 <input
                   pInputText
-                  placeholder="Adres email"
+                  placeholder="Adres email (opcjonalnie)"
                   formControlName="emailAddress"
+                  [pTooltip]="getError('emailAddress')"
+                  tooltipPosition="bottom"
                 />
               </p-inputGroup>
             </div>
@@ -88,8 +95,10 @@
         class="col-12"
         expandIcon="pi pi-plus"
         collapseIcon="pi pi-minus"
+        (onOpen)="setAddressValidators()"
+        (onClose)="setAddressValidators()"
       >
-        <p-accordionTab header="Dane adresowe (opcjonalne)">
+        <p-accordionTab header="Dane adresowe (opcjonalne, gdy zwinięte)">
           <div class="flex flex-row">
             <p-inputGroupAddon>
               <i class="pi pi-globe"></i>
@@ -103,6 +112,8 @@
               optionLabel="name"
               class="w-2 mr-2"
               appendTo="body"
+              [pTooltip]="tooltips['country']"
+              tooltipPosition="bottom"
             />
 
             <p-inputGroupAddon>
@@ -113,6 +124,8 @@
               placeholder="Miejscowość"
               formControlName="city"
               class="mr-3"
+              [pTooltip]="tooltips['city']"
+              tooltipPosition="bottom"
             />
 
             <p-inputGroupAddon>
@@ -123,17 +136,22 @@
               placeholder="Ulica"
               formControlName="street"
               class="mr-3"
+              [pTooltip]="tooltips['street']"
+              tooltipPosition="bottom"
             />
 
             <p-inputGroupAddon>
               <i class="pi pi-envelope"></i>
             </p-inputGroupAddon>
-            <input
-              pInputText
+            <p-inputMask
+              mask="99-999"
               placeholder="Kod pocztowy"
               formControlName="postalCode"
               class="mr-3"
-            />
+              [pTooltip]="tooltips['postalCode']"
+              tooltipPosition="bottom">
+            </p-inputMask>
+
           </div>
         </p-accordionTab>
       </p-accordion>
@@ -144,7 +162,6 @@
     pButton
     type="submit"
     label="Dodaj Klienta"
-    [disabled]="clientForm.invalid"
   ></button>
   <i
     *ngIf="clientForm.invalid"

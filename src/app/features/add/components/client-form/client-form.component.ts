@@ -20,6 +20,10 @@ import { AccordionModule } from 'primeng/accordion';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { ErrorMessageService } from '../../../../shared/services/error-message.service';
+import { InputMaskModule } from 'primeng/inputmask';
+import { CustomValidators } from '../../../../shared/validators/custom-validators';
+
 
 interface Country {
   name: string;
@@ -36,6 +40,7 @@ interface Country {
     ReactiveFormsModule,
     InputGroupModule,
     InputGroupAddonModule,
+    InputMaskModule,
     ButtonModule,
     SplitterModule,
     AccordionModule,
@@ -47,7 +52,10 @@ interface Country {
   styleUrl: './client-form.component.css',
 })
 export class ClientFormComponent implements OnInit {
-  clientForm: FormGroup;
+  clientForm!: FormGroup;
+  addressFormActive: boolean = false;
+
+  tooltips: { [key: string]: string } = {};
 
   countries: Country[] = countries;
 
@@ -56,8 +64,13 @@ export class ClientFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private addService: AddService,
-    private router: Router
-  ) {
+    private router: Router,
+    private errorMessageService: ErrorMessageService
+  ) {}
+
+  ngOnInit(): void {
+    this.countries = countries;
+
     this.clientForm = this.fb.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
@@ -65,7 +78,6 @@ export class ClientFormComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern('^[0-9]+$'),
           Validators.minLength(11),
           Validators.maxLength(11),
         ],
@@ -74,7 +86,8 @@ export class ClientFormComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern('^[-+()0-9]+$'),
+          CustomValidators.phoneValidator(),
+          Validators.minLength(9),
           Validators.maxLength(9),
         ],
       ],
@@ -85,15 +98,11 @@ export class ClientFormComponent implements OnInit {
           Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'),
         ],
       ],
-      country: [''],
+      country: [countries.find((x) => x.name == 'Poland')],
       city: [''],
       street: [''],
       postalCode: [''],
     });
-  }
-
-  ngOnInit(): void {
-    this.countries = countries;
   }
 
   onSubmitClient(): void {
@@ -112,10 +121,40 @@ export class ClientFormComponent implements OnInit {
     } else {
       console.log('Client Form is not valid');
       this.clientForm.markAllAsTouched();
+
+      if (this.clientForm) {
+        Object.keys(this.clientForm.controls).forEach((field) => {
+          const control = this.clientForm.get(field);
+          if (control?.hasError) {
+            control.markAsDirty();
+          }
+        });
+      }
     }
   }
 
-  get name() {
-    return this.clientForm.get('name');
+  setAddressValidators() {
+    if (!this.addressFormActive) {
+      this.clientForm.get('country')?.setValidators([Validators.required]);
+      this.clientForm.get('city')?.setValidators([Validators.required]);
+      this.clientForm.get('street')?.setValidators([Validators.required]);
+      this.clientForm.get('postalCode')?.setValidators([Validators.required]);
+    } else {
+      this.clientForm.get('country')?.clearValidators();
+      this.clientForm.get('city')?.clearValidators();
+      this.clientForm.get('street')?.clearValidators();
+      this.clientForm.get('postalCode')?.clearValidators();
+    }
+
+    this.clientForm.get('country')?.updateValueAndValidity();
+    this.clientForm.get('city')?.updateValueAndValidity();
+    this.clientForm.get('street')?.updateValueAndValidity();
+    this.clientForm.get('postalCode')?.updateValueAndValidity();
+
+    this.addressFormActive = !this.addressFormActive;
+  }
+
+  getError(field: string, form: FormGroup = this.clientForm): string {
+    return this.errorMessageService.getError(field, form);
   }
 }
