@@ -7,7 +7,8 @@ export interface Item {
     notes: string;
     cost: number;
     days: number;
-    clientId: number;
+    personId: number;
     conditionId: number;
+    operationTypeId: number;
 }
 

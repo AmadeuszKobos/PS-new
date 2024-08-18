@@ -14,11 +14,10 @@ export class ErrorMessageService {
 
   getErrorMessage(control: AbstractControl | null): string {
     if (control && control.touched) {
-      console.log(control);
       switch (true) {
         case control.hasError('required'):
           return 'Pole jest wymagane';
-
+          
         case control.hasError('email'):
           return 'Błędny format email';
 

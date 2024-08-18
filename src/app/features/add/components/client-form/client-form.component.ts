@@ -8,7 +8,7 @@ import {
 import { countries } from '../../../../shared/utils/countries';
 import { AddService } from '../../services/add.service';
 import { Router, RouterModule } from '@angular/router';
-import { Client } from '../../models/addClient.model';
+import { Person } from '../../models/Persons.model';
 import { mapClientFormToClient } from '../../services/add-form-mappers';
 import { CommonModule } from '@angular/common';
 import { PanelModule } from 'primeng/panel';
@@ -107,10 +107,10 @@ export class ClientFormComponent implements OnInit {
 
   onSubmitClient(): void {
     if (this.clientForm.valid) {
-      const client: Client = mapClientFormToClient(this.clientForm.value);
+      const client: Person = mapClientFormToClient(this.clientForm.value);
 
       this.addService.addClient(client).subscribe({
-        next: (response: Client) => {
+        next: (response: Person) => {
           console.log('Client added successfully', response);
           this.router.navigate(['/']);
         },

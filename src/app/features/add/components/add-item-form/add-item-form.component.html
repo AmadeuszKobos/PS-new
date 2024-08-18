@@ -1,7 +1,7 @@
 <form
   [formGroup]="itemForm"
   (ngSubmit)="onSubmitItem()"
-  [ngClass]="{'w-30rem' : editMode}"
+  [ngClass]="{ 'w-30rem': editMode }"
 >
   <div class="p-fluid">
     <p-splitter layout="vertical">
@@ -15,7 +15,13 @@
                 <p-inputGroupAddon>
                   <i class="pi pi-box"></i>
                 </p-inputGroupAddon>
-                <input pInputText placeholder="Nazwa" formControlName="name" />
+                <input
+                  pInputText
+                  placeholder="Nazwa"
+                  formControlName="name"
+                  [pTooltip]="getError('name')"
+                  tooltipPosition="bottom"
+                />
               </p-inputGroup>
 
               <div class="flex w-full">
@@ -31,14 +37,19 @@
                   optionValue="conditionId"
                   class="w-full"
                   appendTo="body"
-                  displayProperty = "label"
+                  displayProperty="label"
+                  [pTooltip]="getError('conditionId')"
+                  tooltipPosition="bottom"
                 >
-                <ng-template let-item pTemplate="selectedItem">
-                  <div class="flex align-items-center gap-2" *ngIf="selectedCondition">
-                    <i [class]="item.icon" [style.color]="item.color"></i>
-                    <div>{{ item.name }}</div>
-                  </div>
-                </ng-template>
+                  <ng-template let-item pTemplate="selectedItem">
+                    <div
+                      class="flex align-items-center gap-2"
+                      *ngIf="selectedCondition"
+                    >
+                      <i [class]="item.icon" [style.color]="item.color"></i>
+                      <div>{{ item.name }}</div>
+                    </div>
+                  </ng-template>
 
                   <ng-template let-item pTemplate="item">
                     <div class="flex align-items-center gap-2">
@@ -57,6 +68,8 @@
                   pInputText
                   placeholder="Producent"
                   formControlName="producer"
+                  [pTooltip]="getError('producer')"
+                  tooltipPosition="bottom"
                 />
               </p-inputGroup>
 
@@ -71,6 +84,8 @@
                   placeholder="Opis, uwagi"
                   pInputTextarea
                   formControlName="description"
+                  [pTooltip]="getError('description')"
+                  tooltipPosition="bottom"
                 >
                 </textarea>
               </p-inputGroup>
@@ -89,8 +104,13 @@
                     </p-inputGroupAddon>
                     <input
                       pInputText
+                      type="number"
+                      step="0.01"
+                      appRoundValue
                       placeholder="Wydana kwota"
                       formControlName="cost"
+                      [pTooltip]="getError('cost')"
+                      tooltipPosition="bottom"
                     />
                   </p-inputGroup>
                 </div>
@@ -102,8 +122,14 @@
                     </p-inputGroupAddon>
                     <input
                       pInputText
-                      placeholder="Okres czasu"
+                      type="number"
+                      step="1"
+                      appRoundValue
+                      [decimals]="null"
+                      placeholder="Długość zastawu (w dniach)"
                       formControlName="days"
+                      [pTooltip]="getError('days')"
+                      tooltipPosition="bottom"
                     />
                   </p-inputGroup>
                 </div>
@@ -115,10 +141,21 @@
                     </p-inputGroupAddon>
                     <input
                       pInputText
-                      placeholder="Klient"
-                      formControlName="clientId"
+                      placeholder="Naciśnij, aby wyszukać klienta"
+                      formControlName="client"
+                      [pTooltip]="getError('client')"
+                      tooltipPosition="bottom"
+                      (click)="openPersonsForSearch()"
+                      [readonly]="true"
                     />
+                    <p-inputGroupAddon (click)="openPersonsForSearch()">
+                      <i class="pi pi-search"></i>
+                    </p-inputGroupAddon>
                   </p-inputGroup>
+
+                  <p-dialog header="Wyszukaj klienta" [modal]="true" position="top" [(visible)]="clientRegisterShortVisible" [style]="{ width: '40rem' }">
+                    <app-client-register-short (valueChanged)="onPersonSelect($event)"/>
+                  </p-dialog>
                 </div>
               </div>
 
@@ -133,6 +170,8 @@
                       [value]="operationType.value"
                       formControlName="operationType"
                       inputId="ingredient1"
+                      [pTooltip]="getError('operationType')"
+                      tooltipPosition="bottom"
                     />
                     <label for="ingredient1" class="ml-2">
                       {{ operationType.name }}

@@ -1,7 +1,7 @@
-import { Address, Client } from "../models/addClient.model";
+import { Address, Person } from "../models/Persons.model";
 import { Item } from "../models/addItem";
 
-export function mapClientFormToClient(clientFormValue: any): Client {
+export function mapClientFormToClient(clientFormValue: any): Person {
     return {
       name: clientFormValue.name,
       surname: clientFormValue.surname,
@@ -22,14 +22,16 @@ export function mapAddressFormToAddress(addressFormValue: any): Address {
   };
 }
 
-export function mapItemFormToItem(itemFormValue: any): Item {
+export function mapItemFormToItem(itemFormValue: any, personId: number): Item {
+  debugger
   return {
     name: itemFormValue.name,
     producer: itemFormValue.producer,
     notes: itemFormValue.description,
     cost: itemFormValue.cost,
     days: itemFormValue.days,
-    clientId: itemFormValue.clientId,
-    conditionId: itemFormValue.conditionId
+    personId: personId,
+    conditionId: itemFormValue.conditionId,
+    operationTypeId: itemFormValue.operationType
   }
 }

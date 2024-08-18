@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -23,26 +29,38 @@ import { Item } from '../../models/addItem';
 import { AddService } from '../../services/add.service';
 import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.model';
 import { conditionStates } from '../../../../shared/utils/conditionStates';
+import { ErrorMessageService } from '../../../../shared/services/error-message.service';
+import { TooltipModule } from 'primeng/tooltip';
+import { RoundValueDirective } from '../../../../shared/directives/round-to.directive';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ClientRegisterShortComponent } from '../client-register-short/client-register-short.component';
+import { PersonForSearch } from '../../models/Persons.model';
 
 @Component({
   selector: 'app-add-item-form',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
-    PanelModule,
-    InputTextModule,
-    InputTextareaModule,
-    SplitterModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    RadioButtonModule,
     ButtonModule,
-    ToastModule,
     CommonModule,
+    ClientRegisterShortComponent,
     DropdownModule,
+    DialogModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextareaModule,
+    InputTextModule,
+    PanelModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
+    RoundValueDirective,
+    SplitterModule,
+    ToastModule,
+    TooltipModule,
   ],
   templateUrl: './add-item-form.component.html',
   styleUrl: './add-item-form.component.css',
+  providers: [ConfirmationService, MessageService],
 })
 export class AddItemFormComponent implements OnInit, OnChanges {
   @Input() addMode: boolean = false;
@@ -50,9 +68,15 @@ export class AddItemFormComponent implements OnInit, OnChanges {
   @Input() itemForEdit?: Item;
 
   currentMode!: OperationTypeEnum;
-  itemForm: FormGroup;
+  itemForm!: FormGroup;
+
+  clientSearchValue: string = '';
+
+  clientRegisterShortVisible: boolean = false;
 
   itemConditionStatus = conditionStates;
+
+  selectedPerson!: PersonForSearch;
 
   selectedCondition: {
     name: string;
@@ -70,22 +94,25 @@ export class AddItemFormComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private addService: AddService,
-    private router: Router
-  ) {
-    this.itemForm = this.fb.group({
-      name: ['', [Validators.required]],
-      producer: [''],
-      description: [''],
-      operationType: [OperationTypeEnum.Pawn, [Validators.required]],
-      cost: [''],
-      days: [''],
-      clientId: ['', [Validators.required]],
-      conditionId: [],
-      // uploadImage: [],
-    });
-  }
+    private router: Router,
+    private errorMessageService: ErrorMessageService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
+    this.itemForm = this.fb.group({
+      name: ['', [Validators.required]],
+      conditionId: [, [Validators.required]],
+      producer: [''],
+      description: ['', [Validators.maxLength(50)]],
+      operationType: [OperationTypeEnum.Pawn, [Validators.required]],
+      cost: ['', [Validators.required]],
+      days: ['', [Validators.required]],
+      client: ['', [Validators.required]],
+      // uploadImage: [],
+    });
+
     // Blokowanie pól dla różnych operacji
     this.itemForm
       .get('operationType')
@@ -93,11 +120,12 @@ export class AddItemFormComponent implements OnInit, OnChanges {
         const daysControl = this.itemForm.get('days');
 
         if (operationType === OperationTypeEnum.Pawn) {
-          daysControl?.clearValidators();
+          daysControl?.setValidators([Validators.required]);
           daysControl?.enable();
         } else {
-          daysControl?.setValidators([Validators.required]);
+          daysControl?.removeValidators([Validators.required]);
           daysControl?.disable();
+          daysControl?.setValue('');
         }
 
         daysControl?.updateValueAndValidity();
@@ -110,15 +138,29 @@ export class AddItemFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.itemForEdit)
-    {
-      this.itemForm.patchValue(this.itemForEdit)
+    if (this.itemForEdit) {
+      this.itemForm.patchValue(this.itemForEdit);
     }
   }
 
+  openPersonsForSearch() {
+    this.clientRegisterShortVisible = true;
+  }
+
+  onPersonSelect(person: PersonForSearch) {
+    this.selectedPerson = person;
+    this.clientRegisterShortVisible = false;
+    this.itemForm.get('client')?.setValue(this.selectedPerson.name + ' ' + this.selectedPerson.surname) 
+  }
+
   onSubmitItem(): void {
+
+    const item: Item = mapItemFormToItem(this.itemForm.value, this.selectedPerson.personId);
+    debugger  
+    console.log(item);
+
     if (this.itemForm.valid) {
-      const item: Item = mapItemFormToItem(this.itemForm.value);
+
 
       this.addService.addItem(item).subscribe({
         next: (response: Item) => {
@@ -132,6 +174,19 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     } else {
       console.log('Item Form is not valid');
       this.itemForm.markAllAsTouched();
+
+      if (this.itemForm) {
+        Object.keys(this.itemForm.controls).forEach((field) => {
+          const control = this.itemForm.get(field);
+          if (control?.hasError) {
+            control.markAsDirty();
+          }
+        });
+      }
     }
+  }
+
+  getError(field: string, form: FormGroup = this.itemForm): string {
+    return this.errorMessageService.getError(field, form);
   }
 }
