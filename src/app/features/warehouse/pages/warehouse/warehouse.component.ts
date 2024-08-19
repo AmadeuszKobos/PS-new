@@ -44,7 +44,7 @@ export class WarehouseComponent implements OnInit {
   conditionStates: any = conditionStates;
   itemStatuses = itemStatuses;
 
-  itemForEdit?: Item;
+  itemForAction?: Item;
 
   first: number = 0;
   rows: number = 10;
@@ -67,6 +67,8 @@ export class WarehouseComponent implements OnInit {
 
   showSaleDialog() {
     this.saleFormVisible = true;
+
+    this.getItem();
   }
 
   showEditDialog() {
@@ -107,10 +109,10 @@ export class WarehouseComponent implements OnInit {
   getItem() {
     this.warehouseService.getItem(this.selectedRowItem.id).subscribe({
       next: (itemForEdit: Item) => {
-        this.itemForEdit = itemForEdit;
+        this.itemForAction = itemForEdit;
       },
       error: (err: any) => console.error('Observable emitted an error: ' + err),
-      complete: () => console.log(this.itemForEdit),
+      complete: () => console.log(this.itemForAction),
     });
   }
 

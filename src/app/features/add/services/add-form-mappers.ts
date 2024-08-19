@@ -1,5 +1,6 @@
+import { OperationTypeEnum } from "../../../shared/Enums/operation-type-enum.model";
 import { Address, Person } from "../models/Persons.model";
-import { Item } from "../models/addItem";
+import { Item, ItemForSale } from "../models/addItem";
 
 export function mapClientFormToClient(clientFormValue: any): Person {
     return {
@@ -22,16 +23,25 @@ export function mapAddressFormToAddress(addressFormValue: any): Address {
   };
 }
 
-export function mapItemFormToItem(itemFormValue: any, personId: number): Item {
+export function mapItemFormToItem(itemFormValue: any, personId: number, id: number): Item {
   debugger
   return {
+    id: id,
     name: itemFormValue.name,
     producer: itemFormValue.producer,
     notes: itemFormValue.description,
-    cost: itemFormValue.cost,
+    transactionAmount: itemFormValue.transactionAmount,
     days: itemFormValue.days,
     personId: personId,
     conditionId: itemFormValue.conditionId,
     operationTypeId: itemFormValue.operationType
   }
+}
+
+export function mapSaleFormToItemForSale(saleFormValue: any, personId: number, itemId: number): ItemForSale {
+  return {
+    itemId: itemId,
+    transactionAmount: saleFormValue.transactionAmount,
+    personId: personId,
+  };
 }

@@ -30,7 +30,7 @@
                 </p-inputGroupAddon>
 
                 <p-dropdown
-                  [options]="itemConditionStatus"
+                  [options]="itemConditionStatus.slice(1)"
                   formControlName="conditionId"
                   placeholder="Stan towaru"
                   optionLabel="label"
@@ -108,15 +108,15 @@
                       step="0.01"
                       appRoundValue
                       placeholder="Wydana kwota"
-                      formControlName="cost"
-                      [pTooltip]="getError('cost')"
+                      formControlName="transactionAmount"
+                      [pTooltip]="getError('transactionAmount')"
                       tooltipPosition="bottom"
                     />
                   </p-inputGroup>
                 </div>
 
                 <div class="mt-2">
-                  <p-inputGroup>
+                  <p-inputGroup [class.hidden]="editMode">
                     <p-inputGroupAddon>
                       <i class="pi pi-hourglass"></i>
                     </p-inputGroupAddon>
@@ -139,22 +139,41 @@
                     <p-inputGroupAddon>
                       <i class="pi pi-user"></i>
                     </p-inputGroupAddon>
+
                     <input
                       pInputText
                       placeholder="Naciśnij, aby wyszukać klienta"
-                      formControlName="client"
-                      [pTooltip]="getError('client')"
+                      formControlName="person"
+                      [pTooltip]="getError('person')"
                       tooltipPosition="bottom"
                       (click)="openPersonsForSearch()"
                       [readonly]="true"
+                      *ngIf="!editMode"
                     />
+
+                    <input
+                      pInputText
+                      placeholder="Nie znaleziono"
+                      formControlName="person"
+                      [readonly]="true"
+                      *ngIf="editMode"
+                    />
+
                     <p-inputGroupAddon (click)="openPersonsForSearch()">
                       <i class="pi pi-search"></i>
                     </p-inputGroupAddon>
                   </p-inputGroup>
 
-                  <p-dialog header="Wyszukaj klienta" [modal]="true" position="top" [(visible)]="clientRegisterShortVisible" [style]="{ width: '40rem' }">
-                    <app-client-register-short (valueChanged)="onPersonSelect($event)"/>
+                  <p-dialog
+                    header="Wyszukaj klienta"
+                    [modal]="true"
+                    position="top"
+                    [(visible)]="clientRegisterShortVisible"
+                    [style]="{ width: '40rem' }"
+                  >
+                    <app-client-register-short
+                      (valueChanged)="onPersonSelect($event)"
+                    />
                   </p-dialog>
                 </div>
               </div>

@@ -12,21 +12,21 @@ import {
   ReactiveFormsModule,
   FormControl,
 } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { AddService } from '../../services/add.service';
 import { CommonModule } from '@angular/common';
+import { DropdownModule } from 'primeng/dropdown';
 import { PanelModule } from 'primeng/panel';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { Router } from '@angular/router';
 import { SplitterModule } from 'primeng/splitter';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from 'primeng/button';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToastModule } from 'primeng/toast';
-import { Router } from '@angular/router';
 import { mapItemFormToItem } from '../../services/add-form-mappers';
 import { Item } from '../../models/addItem';
-import { AddService } from '../../services/add.service';
 import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.model';
 import { conditionStates } from '../../../../shared/utils/conditionStates';
 import { ErrorMessageService } from '../../../../shared/services/error-message.service';
@@ -80,7 +80,7 @@ export class AddItemFormComponent implements OnInit, OnChanges {
 
   selectedCondition: {
     name: string;
-    conditionId: number;
+    conditionId?: number;
     value: string;
     icon: string;
     color: string;
@@ -107,9 +107,9 @@ export class AddItemFormComponent implements OnInit, OnChanges {
       producer: [''],
       description: ['', [Validators.maxLength(50)]],
       operationType: [OperationTypeEnum.Pawn, [Validators.required]],
-      cost: ['', [Validators.required]],
+      transactionAmount: ['', [Validators.required]],
       days: ['', [Validators.required]],
-      client: ['', [Validators.required]],
+      person: ['', [Validators.required]],
       // uploadImage: [],
     });
 
@@ -132,8 +132,7 @@ export class AddItemFormComponent implements OnInit, OnChanges {
       });
 
     if (this.editMode) {
-      this.itemForm.get('clientId')?.disable();
-      this.itemForm.get('days')?.disable();
+      this.itemForm.get('person')?.disable();
     }
   }
 
@@ -141,6 +140,7 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     if (this.itemForEdit) {
       this.itemForm.patchValue(this.itemForEdit);
     }
+
   }
 
   openPersonsForSearch() {
@@ -150,17 +150,18 @@ export class AddItemFormComponent implements OnInit, OnChanges {
   onPersonSelect(person: PersonForSearch) {
     this.selectedPerson = person;
     this.clientRegisterShortVisible = false;
-    this.itemForm.get('client')?.setValue(this.selectedPerson.name + ' ' + this.selectedPerson.surname) 
+    this.itemForm
+      .get('person')
+      ?.setValue(this.selectedPerson.name + ' ' + this.selectedPerson.surname);
   }
 
   onSubmitItem(): void {
-
-    const item: Item = mapItemFormToItem(this.itemForm.value, this.selectedPerson.personId);
-    debugger  
-    console.log(item);
-
     if (this.itemForm.valid) {
-
+      const item: Item = mapItemFormToItem(
+        this.itemForm.value,
+        this.itemForEdit?.personId || 0,
+        this.itemForEdit?.id || 0,
+      );
 
       this.addService.addItem(item).subscribe({
         next: (response: Item) => {

@@ -14,7 +14,7 @@
         [(visible)]="saleFormVisible"
         [modal]="true"
       >
-        <app-sale-form />
+        <app-sale-form [itemForSale]="itemForAction"/>
       </p-dialog>
 
       <p-button
@@ -30,7 +30,7 @@
         [(visible)]="editFormVisibile"
         [modal]="true"
       >
-        <app-add-item-form [editMode]="true" [itemForEdit]="itemForEdit" />
+        <app-add-item-form [editMode]="true" [itemForEdit]="itemForAction" />
       </p-dialog>
 
       <p-button
@@ -133,9 +133,9 @@
           </td>
           <td class="w-1rem">
             <i
-              [class]="conditionStates[itemRegister.conditionId - 1 || 0].icon"
+              [class]="conditionStates[itemRegister.conditionId || 0].icon"
               [style.color]="
-                conditionStates[itemRegister.conditionId - 1 || 0].color
+                conditionStates[itemRegister.conditionId || 0].color
               "
             ></i>
           </td>
