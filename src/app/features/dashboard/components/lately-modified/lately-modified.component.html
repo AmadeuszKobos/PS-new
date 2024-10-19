@@ -10,7 +10,7 @@
       <div class="border-1 surface-border border-round m-2 p-3">
         <div class="mb-1 flex justify-content-end align-items-end">
           <div class="flex mx-auto justify-content-end align-items-end absolute">
-            <p-tag [value]="item.name" severity="info" class="" />
+            <p-tag [value]="operationTypes[item.operationId || 0].name" [style]="{'background': operationTypes[item.operationId || 0].color}" />
           </div>
         </div>
 
@@ -24,9 +24,9 @@
             </div>
         </div>
 
-        <div class="xl:mb-1 text-xs"><b>Nazwa:</b> {{ item.name }}</div>
+        <div class="xl:mb-1 text-xs"><b>Nazwa:</b> {{ item.itemName }}</div>
 
-        <div class="xl:mb-2 text-xs"><b>Data: </b> {{ item.date }}</div>
+        <div class="xl:mb-2 text-xs"><b>Data: </b> {{ item.operationDate | date : "yyyy-MM-dd"}}</div>
 
         <div class="flex justify-content-end align-items-end">
           <div>
