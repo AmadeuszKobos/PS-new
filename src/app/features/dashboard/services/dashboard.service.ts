@@ -30,6 +30,11 @@ export class DashboardService {
     return this.apiService.get('/User/GetUserNotes');
   }
 
+  updateUserNotes(notes: string): Observable<any> {
+    return this.apiService.post('/User/UpdateUserNotes', {text: notes});
+  }
+
+
   // InformationContoller API
 
   getInformations(): Observable<Information[]> {

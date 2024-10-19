@@ -5,20 +5,22 @@
         <textarea
           class="w-full h-full"
           pInputTextarea
-          [textContent]="notesContent"
+          name="notes"
+          [(ngModel)]="notesContent"
+          [placeholder]="notesContent"
         >
         </textarea>
       </div>
 
       <div class="flex justify-content-end">
-        <button
-          pButton
-          type="submit"
-          label="Zapisz notatki"
-          class="mt-2 md:text-xs "
-          icon="pi pi-save"
-          size="small"
-        ></button>
+        <p-button
+        label="Zapisz notatki"
+        (onClick)="updateUserNotes()"
+        class="mt-2 md:text-xs "
+        icon="pi pi-save"
+        size="small"
+        class="mr-2"
+      ></p-button>
       </div>
 
     </div>
