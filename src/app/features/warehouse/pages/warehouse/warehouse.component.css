@@ -10,6 +10,10 @@
   padding: 0.5rem;
 }
 
+::ng-deep .p-datatable-header {
+  padding: 0.7rem;
+}
+
 .p-tabview .p-tabview-nav {
   background-color: #04aa6d;
 }

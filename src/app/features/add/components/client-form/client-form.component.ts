@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -23,7 +29,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ErrorMessageService } from '../../../../shared/services/error-message.service';
 import { InputMaskModule } from 'primeng/inputmask';
 import { CustomValidators } from '../../../../shared/validators/custom-validators';
-
 
 interface Country {
   name: string;
@@ -51,7 +56,10 @@ interface Country {
   templateUrl: './client-form.component.html',
   styleUrl: './client-form.component.css',
 })
-export class ClientFormComponent implements OnInit {
+export class ClientFormComponent implements OnInit, OnChanges {
+  @Input() editMode: boolean = false;
+  @Input() PersonForEdit?: Person;
+
   clientForm!: FormGroup;
   addressFormActive: boolean = false;
 
@@ -103,11 +111,28 @@ export class ClientFormComponent implements OnInit {
       street: [''],
       postalCode: [''],
     });
+
+    if (this.editMode) {
+      this.clientForm.get('name')?.disable();
+      this.clientForm.get('surname')?.disable();
+      this.clientForm.get('personalNumber')?.disable();
+
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.PersonForEdit) {
+      this.clientForm.patchValue(this.PersonForEdit);
+    }
   }
 
   onSubmitClient(): void {
     if (this.clientForm.valid) {
-      const client: Person = mapClientFormToClient(this.clientForm.value);
+      const client: Person = mapClientFormToClient(
+        this.clientForm.value,
+        this.PersonForEdit?.addressId || 0,
+        this.PersonForEdit?.personId || 0
+      );
 
       this.addService.addClient(client).subscribe({
         next: (response: Person) => {

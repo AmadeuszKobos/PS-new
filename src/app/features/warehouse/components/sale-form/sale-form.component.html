@@ -1,4 +1,4 @@
-<form [formGroup]="saleForm" (ngSubmit)="onSubmitSale()">
+<form [formGroup]="saleForm" (ngSubmit)="onSubmitSale()"  [style]="{ width: '40rem' }">
   <div class="col grid align-items-center row-gap-2 p-3">
     <header class="font-bold">Formularz sprzedażowy:</header>
 
@@ -20,10 +20,10 @@
         formControlName="person"
         [pTooltip]="getError('person')"
         tooltipPosition="bottom"
-        (click)="openPersonsForSearch()"
+        (click)="!handoverMode && openPersonsForSearch()"
         [readonly]="true"
       />
-      <p-inputGroupAddon (click)="openPersonsForSearch()">
+      <p-inputGroupAddon (click)="!handoverMode && openPersonsForSearch()">
         <i class="pi pi-search"></i>
       </p-inputGroupAddon>
     </p-inputGroup>
@@ -38,6 +38,8 @@
       <app-client-register-short (valueChanged)="onPersonSelect($event)" />
     </p-dialog>
 
+
+
     <p-inputGroup>
       <p-inputGroupAddon>
         <i class="pi pi-dollar"></i>
@@ -47,13 +49,20 @@
         type="number"
         step="0.01"
         appRoundValue
-        placeholder="Wydana kwota"
+        placeholder="Kwota transakcji"
         formControlName="transactionAmount"
         [pTooltip]="getError('transactionAmount')"
         tooltipPosition="bottom"
+        [readonly]="handoverMode"
       />
     </p-inputGroup>
+
+    <div>
+      <p class="text-400 font-italic text-xs my-0" *ngIf="!handoverMode">Wydana kwota {{priceSuggestion}}zł</p>
+    </div>
   </div>
+
+
 
   <p-button label="Sprzedaj" (onClick)="onSubmitSale()"></p-button>
 </form>

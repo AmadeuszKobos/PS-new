@@ -36,6 +36,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ClientRegisterShortComponent } from '../client-register-short/client-register-short.component';
 import { PersonForSearch } from '../../models/Persons.model';
+import { ItemRegister } from '../../../warehouse/models/item-register.model';
 
 @Component({
   selector: 'app-add-item-form',
@@ -65,7 +66,7 @@ import { PersonForSearch } from '../../models/Persons.model';
 export class AddItemFormComponent implements OnInit, OnChanges {
   @Input() addMode: boolean = false;
   @Input() editMode: boolean = false;
-  @Input() itemForEdit?: Item;
+  @Input() itemForEdit?: ItemRegister;
 
   currentMode!: OperationTypeEnum;
   itemForm!: FormGroup;
@@ -105,8 +106,8 @@ export class AddItemFormComponent implements OnInit, OnChanges {
       name: ['', [Validators.required]],
       conditionId: [, [Validators.required]],
       producer: [''],
-      description: ['', [Validators.maxLength(50)]],
-      operationType: [OperationTypeEnum.Pawn, [Validators.required]],
+      notes: ['', [Validators.maxLength(50)]],
+      operationId: [OperationTypeEnum.Pawn, [Validators.required]],
       transactionAmount: ['', [Validators.required]],
       days: ['', [Validators.required]],
       person: ['', [Validators.required]],
@@ -115,11 +116,11 @@ export class AddItemFormComponent implements OnInit, OnChanges {
 
     // Blokowanie pól dla różnych operacji
     this.itemForm
-      .get('operationType')
-      ?.valueChanges.subscribe((operationType) => {
+      .get('operationId')
+      ?.valueChanges.subscribe((operationId) => {
         const daysControl = this.itemForm.get('days');
 
-        if (operationType === OperationTypeEnum.Pawn) {
+        if (operationId === OperationTypeEnum.Pawn) {
           daysControl?.setValidators([Validators.required]);
           daysControl?.enable();
         } else {
@@ -133,6 +134,10 @@ export class AddItemFormComponent implements OnInit, OnChanges {
 
     if (this.editMode) {
       this.itemForm.get('person')?.disable();
+      this.itemForm.get('days')?.disable();
+      this.itemForm.get('transactionAmount')?.disable();
+
+      this.itemForm.get('operationId')?.setValue(OperationTypeEnum.Update)
     }
   }
 
@@ -140,7 +145,6 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     if (this.itemForEdit) {
       this.itemForm.patchValue(this.itemForEdit);
     }
-
   }
 
   openPersonsForSearch() {
@@ -155,13 +159,17 @@ export class AddItemFormComponent implements OnInit, OnChanges {
       ?.setValue(this.selectedPerson.name + ' ' + this.selectedPerson.surname);
   }
 
-  onSubmitItem(): void {
+  onSubmitItem() {
+    console.log(this.itemForm)
+
     if (this.itemForm.valid) {
       const item: Item = mapItemFormToItem(
         this.itemForm.value,
-        this.itemForEdit?.personId || 0,
+        this.selectedPerson?.personId || 0,
         this.itemForEdit?.id || 0,
       );
+
+      debugger
 
       this.addService.addItem(item).subscribe({
         next: (response: Item) => {

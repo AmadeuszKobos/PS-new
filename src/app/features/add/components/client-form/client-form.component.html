@@ -17,6 +17,7 @@
                 formControlName="name"
                 [pTooltip]="getError('name')"
                 tooltipPosition="bottom"
+                [readOnly]="editMode"
               />
             </p-inputGroup>
 
@@ -30,6 +31,7 @@
                 formControlName="surname"
                 [pTooltip]="getError('surname')"
                 tooltipPosition="bottom"
+                [readOnly]="editMode"
               />
             </p-inputGroup>
 
@@ -43,6 +45,8 @@
                 formControlName="personalNumber"
                 [pTooltip]="getError('personalNumber')"
                 tooltipPosition="bottom"
+                [readOnly]="editMode"
+
               />
             </p-inputGroup>
           </div>

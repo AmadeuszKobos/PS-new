@@ -10,6 +10,7 @@ export interface ItemRegister {
     conditionId?: number;
     condition?: string;
     notes: string;
+    pawnshopOwnershipDate: Date;
 }
 
 export interface ItemStatus {

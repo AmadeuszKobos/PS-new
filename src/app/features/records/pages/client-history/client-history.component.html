@@ -1,45 +1,202 @@
 <div class="h-full p-3">
-  <p-panel class="min-h-screen" [header]="'Historia: TU WSTAWIĆ NAZWE'">
+  <p-panel class="min-h-screen" [header]="'Historia: ' + personName">
     <p-table
-      [value]="clientHistory"
+      #dt
+      [value]="personHistories"
       [first]="first"
       [rows]="rows"
       [rowsPerPageOptions]="[10, 20, 30]"
-      [totalRecords]="clientHistory.length"
+      [totalRecords]="personHistories.length"
       styleClass="p-datatable-gridlines"
       [scrollable]="true"
       [paginator]="true"
+      [globalFilterFields]="[
+      'operationDate',
+      'itemName',
+      'username',
+    ]"
     >
+      <ng-template pTemplate="caption" class="flex">
+        <!-- Wyszukiwarka -->
+
+        <div class="flex">
+          <div class="flex mr-2">
+            <p-iconField iconPosition="right" class="ml-auto">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input
+                #textInput
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal(textInput.value, 'contains')"
+                placeholder="Wyszukaj..."
+              />
+            </p-iconField>
+          </div>
+
+          <!-- Filtr operacji -->
+
+          <div class="mr-2">
+            <p-columnFilter
+              field="operationId"
+              matchMode="contains"
+              [showMenu]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-name
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [options]="operationTypes.slice(1)"
+                  (onChange)="filter($event.value)"
+                  optionValue="operationId"
+                  placeholder="Wybierz status"
+                  showClear="true"
+                >
+                  <ng-template let-option pTemplate="selectedItem">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        operationTypes[option.operationId || 1].color
+                      "
+                    >
+                      <div>
+                        <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template let-option pTemplate="item">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        operationTypes[option.operationId || 1].color
+                      "
+                    >
+                      <div
+                        [class]="operationTypes[option.operationId || 1].icon"
+                        class="flex align-items-center justify-content-center"
+                      ></div>
+                      <div>
+                        : <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+
+          <!-- Filtr stanów -->
+
+          <div>
+            <p-columnFilter
+              field="conditionId"
+              matchMode="contains"
+              [showMenu]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-name
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [options]="conditionStates.slice(1)"
+                  (onChange)="filter($event.value)"
+                  optionValue="conditionId"
+                  placeholder="Wybierz stan"
+                  showClear="true"
+                >
+                  <ng-template let-option pTemplate="selectedItem">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        conditionStates[option.conditionId || 1].color
+                      "
+                    >
+                      <div>
+                        <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template let-option pTemplate="item">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        conditionStates[option.conditionId || 1].color
+                      "
+                    >
+                      <div
+                        [class]="conditionStates[option.conditionId || 1].icon"
+                        class="flex align-items-center justify-content-center"
+                      ></div>
+                      <div>
+                        : <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="header">
         <tr class="align-items-center">
-          <th>Data</th>
+          <th pSortableColumn="operationDate">
+            Data<p-sortIcon field="operationDate" />
+          </th>
           <th>Operacja</th>
-          <th>Kwota</th>
+          <th pSortableColumn="transactionAmount">Kwota<p-sortIcon field="transactionAmount" /></th>
           <th>Stan</th>
           <th>Opis</th>
-          <th>Klient</th>
+          <th>Przedmiot</th>
           <th>Użytkownik</th>
-        </tr>
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-itemHistory>
         <tr #itemRow [pSelectableRow]="itemHistory">
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
-          <td class="w-2">{{ itemHistory.name }}</td>
+          <td class="w-2">
+            {{ itemHistory.operationDate | date : "yyyy-MM-dd" }}
+          </td>
+
+          <td class="w-1rem">
+            <i
+              [class]="operationTypes[itemHistory.operationId || 0].icon"
+              [style.color]="operationTypes[itemHistory.operationId || 0].color"
+            ></i>
+          </td>
+
+          <td class="w-2">
+            {{ itemHistory.transactionAmount | number : "1.2-2" }} zł
+          </td>
+
+          <td class="w-1rem">
+            <i
+              [class]="conditionStates[itemHistory.conditionId || 0].icon"
+              [style.color]="
+                conditionStates[itemHistory.conditionId || 0].color
+              "
+            ></i>
+          </td>
+
+          <td
+            class="w-2"
+            [class.font-italic]="itemHistory.notes == ''"
+            [class.text-bluegray-300]="itemHistory.notes == ''"
+          >
+            {{ itemHistory.notes || "Brak opisu" }}
+          </td>
+
+          <td class="w-2">{{ itemHistory.itemName }}</td>
+
+          <td class="w-2">{{ itemHistory.username }}</td>
         </tr>
       </ng-template>
     </p-table>

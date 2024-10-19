@@ -11,6 +11,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ClientFormComponent } from '../../../add/components/client-form/client-form.component';
 import { PersonsRegister } from '../../models/person-register.model';
 import { Router, RouterModule } from '@angular/router';
+import { Person } from '../../../add/models/Persons.model';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
 
 @Component({
   selector: 'app-records',
@@ -25,6 +30,10 @@ import { Router, RouterModule } from '@angular/router';
     PaginatorModule,
     RouterModule,
     TableModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule,
+    TriStateCheckboxModule,
   ],
   templateUrl: './records.component.html',
   styleUrl: './records.component.css',
@@ -32,10 +41,11 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class RecordsComponent implements OnInit {
   personsRegister: PersonsRegister[] = [];
+  personForEdit?: Person;
 
   visible: boolean = false;
 
-  selectedClient!: any;
+  selectedClient!: PersonsRegister;
 
   first: number = 0;
   rows: number = 10;
@@ -44,7 +54,7 @@ export class RecordsComponent implements OnInit {
     private recordsService: RecordsService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -56,19 +66,15 @@ export class RecordsComponent implements OnInit {
     let message: string;
     let icon: string;
 
-    if(this.selectedClient.blacklistFlag)
-    {
+    if (this.selectedClient.blacklistFlag) {
       header = `Czy na pewno chcesz odblokować '${this.selectedClient.name}'`;
       message = `Przywrócisz możliwość przeprowadzania transakcji z użytkownikiem`;
-      icon = "pi-lock-open"
-    }
-    else
-    {
-      header = `Czy na pewno chcesz zablokować '${this.selectedClient.name}'`
+      icon = 'pi-lock-open';
+    } else {
+      header = `Czy na pewno chcesz zablokować '${this.selectedClient.name}'`;
       message = `Przeprowadzenie transkacji z tym użytkownikiem stanie się niemożliwe`;
-      icon = "pi-lock"
+      icon = 'pi-lock';
     }
-
 
     this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -82,6 +88,8 @@ export class RecordsComponent implements OnInit {
           summary: 'Confirmed',
           detail: 'You have accepted',
         });
+
+        this.updateBlacklistStatus();
       },
       reject: () => {
         this.messageService.add({
@@ -94,11 +102,37 @@ export class RecordsComponent implements OnInit {
     });
   }
 
-  showDialog() {
+  updateBlacklistStatus() {
+    this.recordsService
+      .updateBlacklistStatus(
+        this.selectedClient.id,
+        this.selectedClient.blacklistFlag
+      )
+      .subscribe({
+        next: () => {
+          console.log('Usuwanie w toku');
+        },
+        error: (err: any) => console.error('Napotkano błąd: ' + err),
+        complete: () => console.log('Usunięto pomyślnie'),
+      });
+  }
+
+  showEditDialog() {
     this.visible = true;
 
-    //this.getItem();
+    this.getPerson();
     console.log(this.selectedClient);
+  }
+
+  getPerson() {
+    this.recordsService.getPerson(this.selectedClient.id).subscribe({
+      next: (person: Person) => {
+        this.personForEdit = person;
+      },
+      error: (err: any) => console.error('Observable emitted an error: ' + err),
+      complete: () =>
+        console.log('Observable emitted the complete notification'),
+    });
   }
 
   confirmArchiveAction(event: Event) {
@@ -127,7 +161,9 @@ export class RecordsComponent implements OnInit {
   }
 
   navigateToClientHistory() {
-    return this.router.navigate(['client-history'])
+    return this.router.navigate(['client-history'], {
+      state: { id: this.selectedClient.id },
+    });
   }
 
   getClientsRegisterList() {

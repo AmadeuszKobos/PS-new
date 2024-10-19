@@ -3,7 +3,7 @@ export enum OperationTypeEnum {
     Purchase = 1,
     Sale = 2,
     Pawn = 3,
-    Repossesion = 4,
+    Handover = 4,
     Extension = 5,
     Update = 6,
     Delete = 7,

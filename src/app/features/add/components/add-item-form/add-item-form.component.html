@@ -1,226 +1,216 @@
-<form
-  [formGroup]="itemForm"
-  (ngSubmit)="onSubmitItem()"
-  [ngClass]="{ 'w-30rem': editMode }"
->
-  <div class="p-fluid">
-    <p-splitter layout="vertical">
-      <ng-template pTemplate>
-        <p-splitter layout="horizontal">
-          <ng-template pTemplate>
-            <div class="col grid align-items-center row-gap-2 p-3">
-              <header class="font-bold">Infomacje ogólne:</header>
+<div   [style]="{ width: '45rem' }">
+  <form [formGroup]="itemForm">
+    <div class="p-fluid">
+      <p-splitter layout="vertical">
+        <ng-template pTemplate>
+          <p-splitter layout="horizontal">
+            <ng-template pTemplate>
+              <div class="col grid align-items-center row-gap-2 p-3">
+                <header class="font-bold">Infomacje ogólne:</header>
 
-              <p-inputGroup>
-                <p-inputGroupAddon>
-                  <i class="pi pi-box"></i>
-                </p-inputGroupAddon>
-                <input
-                  pInputText
-                  placeholder="Nazwa"
-                  formControlName="name"
-                  [pTooltip]="getError('name')"
-                  tooltipPosition="bottom"
-                />
-              </p-inputGroup>
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="pi pi-box"></i>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    placeholder="Nazwa"
+                    formControlName="name"
+                    [pTooltip]="getError('name')"
+                    tooltipPosition="bottom"
+                  />
+                </p-inputGroup>
 
-              <div class="flex w-full">
-                <p-inputGroupAddon>
-                  <i class="pi pi-wrench"></i>
-                </p-inputGroupAddon>
+                <div class="flex w-full">
+                  <p-inputGroupAddon>
+                    <i class="pi pi-wrench"></i>
+                  </p-inputGroupAddon>
 
-                <p-dropdown
-                  [options]="itemConditionStatus.slice(1)"
-                  formControlName="conditionId"
-                  placeholder="Stan towaru"
-                  optionLabel="label"
-                  optionValue="conditionId"
-                  class="w-full"
-                  appendTo="body"
-                  displayProperty="label"
-                  [pTooltip]="getError('conditionId')"
-                  tooltipPosition="bottom"
-                >
-                  <ng-template let-item pTemplate="selectedItem">
-                    <div
-                      class="flex align-items-center gap-2"
-                      *ngIf="selectedCondition"
-                    >
-                      <i [class]="item.icon" [style.color]="item.color"></i>
-                      <div>{{ item.name }}</div>
-                    </div>
-                  </ng-template>
-
-                  <ng-template let-item pTemplate="item">
-                    <div class="flex align-items-center gap-2">
-                      <i [class]="item.icon" [style.color]="item.color"></i>
-                      <div>{{ item.name }}</div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
-
-              <p-inputGroup>
-                <p-inputGroupAddon>
-                  <i class="pi pi-tag"></i>
-                </p-inputGroupAddon>
-                <input
-                  pInputText
-                  placeholder="Producent"
-                  formControlName="producer"
-                  [pTooltip]="getError('producer')"
-                  tooltipPosition="bottom"
-                />
-              </p-inputGroup>
-
-              <p-inputGroup>
-                <p-inputGroupAddon>
-                  <i class="pi pi-info-circle"></i>
-                </p-inputGroupAddon>
-                <textarea
-                  id="description"
-                  rows="2"
-                  cols="30"
-                  placeholder="Opis, uwagi"
-                  pInputTextarea
-                  formControlName="description"
-                  [pTooltip]="getError('description')"
-                  tooltipPosition="bottom"
-                >
-                </textarea>
-              </p-inputGroup>
-            </div>
-          </ng-template>
-
-          <ng-template pTemplate>
-            <div class="flex-none w-full">
-              <div class="col flex-column row-gap-2 p-2">
-                <header class="font-bold">Operacja:</header>
-
-                <div class="mt-2">
-                  <p-inputGroup>
-                    <p-inputGroupAddon>
-                      <i class="pi pi-dollar"></i>
-                    </p-inputGroupAddon>
-                    <input
-                      pInputText
-                      type="number"
-                      step="0.01"
-                      appRoundValue
-                      placeholder="Wydana kwota"
-                      formControlName="transactionAmount"
-                      [pTooltip]="getError('transactionAmount')"
-                      tooltipPosition="bottom"
-                    />
-                  </p-inputGroup>
-                </div>
-
-                <div class="mt-2">
-                  <p-inputGroup [class.hidden]="editMode">
-                    <p-inputGroupAddon>
-                      <i class="pi pi-hourglass"></i>
-                    </p-inputGroupAddon>
-                    <input
-                      pInputText
-                      type="number"
-                      step="1"
-                      appRoundValue
-                      [decimals]="null"
-                      placeholder="Długość zastawu (w dniach)"
-                      formControlName="days"
-                      [pTooltip]="getError('days')"
-                      tooltipPosition="bottom"
-                    />
-                  </p-inputGroup>
-                </div>
-
-                <div class="mt-2">
-                  <p-inputGroup>
-                    <p-inputGroupAddon>
-                      <i class="pi pi-user"></i>
-                    </p-inputGroupAddon>
-
-                    <input
-                      pInputText
-                      placeholder="Naciśnij, aby wyszukać klienta"
-                      formControlName="person"
-                      [pTooltip]="getError('person')"
-                      tooltipPosition="bottom"
-                      (click)="openPersonsForSearch()"
-                      [readonly]="true"
-                      *ngIf="!editMode"
-                    />
-
-                    <input
-                      pInputText
-                      placeholder="Nie znaleziono"
-                      formControlName="person"
-                      [readonly]="true"
-                      *ngIf="editMode"
-                    />
-
-                    <p-inputGroupAddon (click)="openPersonsForSearch()">
-                      <i class="pi pi-search"></i>
-                    </p-inputGroupAddon>
-                  </p-inputGroup>
-
-                  <p-dialog
-                    header="Wyszukaj klienta"
-                    [modal]="true"
-                    position="top"
-                    [(visible)]="clientRegisterShortVisible"
-                    [style]="{ width: '40rem' }"
+                  <p-dropdown
+                    [options]="itemConditionStatus.slice(1)"
+                    formControlName="conditionId"
+                    placeholder="Stan towaru"
+                    optionLabel="label"
+                    optionValue="conditionId"
+                    class="w-full"
+                    appendTo="body"
+                    displayProperty="label"
+                    [pTooltip]="getError('conditionId')"
+                    tooltipPosition="bottom"
                   >
-                    <app-client-register-short
-                      (valueChanged)="onPersonSelect($event)"
-                    />
-                  </p-dialog>
-                </div>
-              </div>
+                    <ng-template let-item pTemplate="selectedItem">
+                      <div
+                        class="flex align-items-center gap-2"
+                        *ngIf="selectedCondition"
+                      >
+                        <i [class]="item.icon" [style.color]="item.color"></i>
+                        <div>{{ item.name }}</div>
+                      </div>
+                    </ng-template>
 
-              <div class="p-2 pb-0 pt-0" [ngClass]="{ hidden: editMode }">
-                <div
-                  *ngFor="let operationType of operationTypes"
-                  class="flex flex-wrap mb-2"
-                >
-                  <div class="flex align-items-center">
-                    <p-radioButton
-                      name="operationType"
-                      [value]="operationType.value"
-                      formControlName="operationType"
-                      inputId="ingredient1"
-                      [pTooltip]="getError('operationType')"
-                      tooltipPosition="bottom"
-                    />
-                    <label for="ingredient1" class="ml-2">
-                      {{ operationType.name }}
-                    </label>
+                    <ng-template let-item pTemplate="item">
+                      <div class="flex align-items-center gap-2">
+                        <i [class]="item.icon" [style.color]="item.color"></i>
+                        <div>{{ item.name }}</div>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </div>
+
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="pi pi-tag"></i>
+                  </p-inputGroupAddon>
+                  <input
+                    pInputText
+                    placeholder="Producent"
+                    formControlName="producer"
+                    [pTooltip]="getError('producer')"
+                    tooltipPosition="bottom"
+                  />
+                </p-inputGroup>
+
+                <p-inputGroup>
+                  <p-inputGroupAddon>
+                    <i class="pi pi-info-circle"></i>
+                  </p-inputGroupAddon>
+                  <textarea
+                    id="notes"
+                    rows="2"
+                    cols="30"
+                    placeholder="Opis, uwagi"
+                    pInputTextarea
+                    formControlName="notes"
+                    [pTooltip]="getError('notes')"
+                    tooltipPosition="bottom"
+                  >
+                  </textarea>
+                </p-inputGroup>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate *ngIf="!editMode">
+              <div class="flex-none w-full">
+                <div class="col flex-column row-gap-2 p-2">
+                  <header class="font-bold">Operacja:</header>
+
+                  <div class="mt-2">
+                    <p-inputGroup>
+                      <p-inputGroupAddon>
+                        <i class="pi pi-dollar"></i>
+                      </p-inputGroupAddon>
+                      <input
+                        pInputText
+                        type="number"
+                        step="0.01"
+                        appRoundValue
+                        placeholder="Wydana kwota"
+                        formControlName="transactionAmount"
+                        [pTooltip]="getError('transactionAmount')"
+                        tooltipPosition="bottom"
+                      />
+                    </p-inputGroup>
+                  </div>
+
+                  <div class="mt-2">
+                    <p-inputGroup [class.hidden]="editMode">
+                      <p-inputGroupAddon>
+                        <i class="pi pi-hourglass"></i>
+                      </p-inputGroupAddon>
+                      <input
+                        pInputText
+                        type="number"
+                        step="1"
+                        appRoundValue
+                        [decimals]="null"
+                        placeholder="Długość zastawu (w dniach)"
+                        formControlName="days"
+                        [pTooltip]="getError('days')"
+                        tooltipPosition="bottom"
+                      />
+                    </p-inputGroup>
+                  </div>
+
+                  <div class="mt-2">
+                    <p-inputGroup>
+                      <p-inputGroupAddon>
+                        <i class="pi pi-user"></i>
+                      </p-inputGroupAddon>
+
+                      <input
+                        pInputText
+                        placeholder="Naciśnij, aby wyszukać klienta"
+                        formControlName="person"
+                        [pTooltip]="getError('person')"
+                        tooltipPosition="bottom"
+                        (click)="openPersonsForSearch()"
+                        [readonly]="true"
+                        *ngIf="!editMode"
+                      />
+
+                      <input
+                        pInputText
+                        placeholder="Nie znaleziono"
+                        formControlName="person"
+                        [readonly]="true"
+                        *ngIf="editMode"
+                      />
+
+                      <p-inputGroupAddon (click)="openPersonsForSearch()">
+                        <i class="pi pi-search"></i>
+                      </p-inputGroupAddon>
+                    </p-inputGroup>
+
+                    <p-dialog
+                      header="Wyszukaj klienta"
+                      [modal]="true"
+                      position="top"
+                      [(visible)]="clientRegisterShortVisible"
+                      [style]="{ width: '40rem' }"
+                    >
+                      <app-client-register-short
+                        (valueChanged)="onPersonSelect($event)"
+                      />
+                    </p-dialog>
+                  </div>
+                </div>
+
+                <div class="p-2 pb-0 pt-0" [ngClass]="{ hidden: editMode }">
+                  <div
+                    *ngFor="let operationType of operationTypes"
+                    class="flex flex-wrap mb-2"
+                  >
+                    <div class="flex align-items-center">
+                      <p-radioButton
+                        name="operationId"
+                        [value]="operationType.value"
+                        formControlName="operationId"
+                        inputId="ingredient1"
+                        [pTooltip]="getError('operationId')"
+                        tooltipPosition="bottom"
+                      />
+                      <label for="ingredient1" class="ml-2">
+                        {{ operationType.name }}
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ng-template>
-        </p-splitter>
-      </ng-template>
-    </p-splitter>
-  </div>
-  <button
-    pButton
-    type="submit"
-    label="Dodaj Towar"
-    [ngClass]="{ hidden: !addMode }"
-  ></button>
-  <button
-    pButton
-    type="submit"
-    label="Zapisz zmiany"
-    [ngClass]="{ hidden: !editMode }"
-    class="mr-2"
-  ></button>
-  <button
-    pButton
-    type="submit"
-    label="Przedłuż zastaw"
-    [ngClass]="{ hidden: !editMode }"
-  ></button>
-</form>
+            </ng-template>
+          </p-splitter>
+        </ng-template>
+      </p-splitter>
+    </div>
+    <p-button
+      label="Dodaj Towar"
+      (onClick)="onSubmitItem()"
+      [ngClass]="{ hidden: !addMode }"
+    ></p-button>
+    <p-button
+      label="Zapisz zmiany"
+      (onClick)="onSubmitItem()"
+      [ngClass]="{ hidden: !editMode }"
+      class="mr-2"
+    ></p-button>
+  </form>
+</div>

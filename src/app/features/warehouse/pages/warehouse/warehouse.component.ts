@@ -6,34 +6,41 @@ import { WarehouseService } from '../../services/warehouse.service';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
+import { IconFieldModule } from 'primeng/iconfield';
 import { ItemRegister } from '../../models/item-register.model';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+
 import { conditionStates } from '../../../../shared/utils/conditionStates';
 import { itemStatuses } from '../../../../shared/utils/itemStatuses';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AddItemFormComponent } from '../../../add/components/add-item-form/add-item-form.component';
-import { Item } from '../../../add/models/addItem';
 import { SaleFormComponent } from '../../components/sale-form/sale-form.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
+import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.model';
 
 @Component({
   selector: 'app-warehouse',
   standalone: true,
   imports: [
+    AddItemFormComponent,
+    ButtonModule,
     CommonModule,
+    ConfirmDialogModule,
+    DropdownModule,
+    DialogModule,
     RouterModule,
     PanelModule,
     PaginatorModule,
     TableModule,
-    DropdownModule,
     TagModule,
-    ButtonModule,
-    DialogModule,
-    ConfirmDialogModule,
-    AddItemFormComponent,
+    IconFieldModule,
+    InputTextModule,
     SaleFormComponent,
+    InputIconModule,
   ],
   templateUrl: './warehouse.component.html',
   styleUrls: ['./warehouse.component.css'],
@@ -44,7 +51,8 @@ export class WarehouseComponent implements OnInit {
   conditionStates: any = conditionStates;
   itemStatuses = itemStatuses;
 
-  itemForAction?: Item;
+  itemForAction?: ItemRegister;
+  priceSuggestion?: number;
 
   first: number = 0;
   rows: number = 10;
@@ -53,28 +61,52 @@ export class WarehouseComponent implements OnInit {
 
   editFormVisibile: boolean = false;
   saleFormVisible: boolean = false;
+  handOverFormVisible: boolean = false;
+  extensionFormVisible: boolean = false;
 
   constructor(
     private warehouseService: WarehouseService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.getItemRegisterList();
   }
 
-  showSaleDialog() {
+  showSaleOrHandoverDialog() {
+    this.GetItemPriceSuggestion();
     this.saleFormVisible = true;
+    this.itemForAction = this.selectedRowItem;
+  }
 
-    this.getItem();
+  GetItemPriceSuggestion() {
+    
+    this.warehouseService
+    .GetItemPriceSuggestion(
+      this.selectedRowItem.id,
+      this.selectedRowItem.pawnshopOwnershipDate
+    )
+    .subscribe({
+      next: (priceSuggestion: number) => {
+        this.priceSuggestion = priceSuggestion;
+        debugger
+      },
+        error: (error) => {
+          console.error('Error fetching item:', error);
+        },
+      });
+  }
+
+  showExtensionDialog() {
+    this.extensionFormVisible = true;
   }
 
   showEditDialog() {
     this.editFormVisibile = true;
-
-    this.getItem();
+    this.itemForAction = this.selectedRowItem;
+    //this.getItem();
   }
 
   confirmDelete(event: Event) {
@@ -84,6 +116,8 @@ export class WarehouseComponent implements OnInit {
       message: `Tej operacji nie możesz cofnąć`,
       rejectButtonStyleClass: 'p-button-text',
       accept: () => {
+        this.updateItemDelete();
+
         this.messageService.add({
           severity: 'info',
           summary: 'Confirmed',
@@ -101,18 +135,20 @@ export class WarehouseComponent implements OnInit {
     });
   }
 
-  nagivateToItemHistory()
-  {
-    this.router.navigate(['/item-history'])
+  updateItemDelete() {
+    this.warehouseService.updateItemDelete(this.selectedRowItem.id).subscribe({
+      next: () => {
+        console.log('Usuwanie w toku');
+      },
+      error: (err: any) => console.error('Napotkano błąd: ' + err),
+      complete: () => console.log('Usunięto pomyślnie'),
+    });
   }
 
-  getItem() {
-    this.warehouseService.getItem(this.selectedRowItem.id).subscribe({
-      next: (itemForEdit: Item) => {
-        this.itemForAction = itemForEdit;
-      },
-      error: (err: any) => console.error('Observable emitted an error: ' + err),
-      complete: () => console.log(this.itemForAction),
+  nagivateToItemHistory() {
+    console.log(this.selectedRowItem);
+    this.router.navigate(['/item-history'], {
+      state: { id: this.selectedRowItem.id },
     });
   }
 

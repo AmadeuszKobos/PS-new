@@ -1,85 +1,7 @@
 <div class="h-full p-3">
   <p-panel class="min-h-screen" header="Magazyn">
-    <div class="flex w-full algin-items-end justify-content-end">
-      <p-button
-        class="m-2"
-        label=""
-        icon="pi pi-shopping-cart"
-        (onClick)="showSaleDialog()"
-        [disabled]="!selectedRowItem"
-      />
-
-      <p-dialog
-        header="Formularz sprzedażowy"
-        [(visible)]="saleFormVisible"
-        [modal]="true"
-      >
-        <app-sale-form [itemForSale]="itemForAction"/>
-      </p-dialog>
-
-      <p-button
-        class="m-2"
-        label=""
-        icon="pi pi-pen-to-square"
-        (onClick)="showEditDialog()"
-        [disabled]="!selectedRowItem"
-      />
-
-      <p-dialog
-        header="Edytuj towar"
-        [(visible)]="editFormVisibile"
-        [modal]="true"
-      >
-        <app-add-item-form [editMode]="true" [itemForEdit]="itemForAction" />
-      </p-dialog>
-
-      <p-button
-        class="m-2"
-        icon="pi pi-trash"
-        [disabled]="!selectedRowItem"
-        (onClick)="confirmDelete($event)"
-      />
-
-      <p-confirmDialog #cd>
-        <ng-template pTemplate="headless" let-message>
-          <div class="flex flex-column align-items-center p-5 surface-overlay border-round">
-              <div class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem">
-                  <i class="pi pi-exclamation-triangle text-5xl"></i>
-              </div>
-              <span class="font-bold text-2xl block mb-2 mt-4">
-                  {{ message.header }}
-              </span>
-              <p class="mb-0">{{ message.message }}</p>
-              <div class="flex align-items-center gap-2 mt-4">
-                  <button 
-                      pButton 
-                      label="Usuń" 
-                      (click)="cd.accept()" 
-                      class="w-8rem">
-                  </button>
-                  <button 
-                      pButton 
-                      label="Anuluj"
-                      (click)="cd.reject()" 
-                      class="p-button-outlined w-8rem ">
-                  </button>
-              </div>
-          </div>
-      </ng-template>
-      </p-confirmDialog>
-
-      <p-button
-        class="m-2"
-        label=""
-        icon="pi pi-history"
-        [disabled]="!selectedRowItem"
-        (onClick)="nagivateToItemHistory()"
-      />
-
-
-    </div>
-
     <p-table
+      #dt
       [value]="itemsRegister"
       selectionMode="single"
       stateStorage="session"
@@ -91,25 +13,285 @@
       styleClass="p-datatable-gridlines"
       [scrollable]="true"
       [paginator]="true"
+      sortField="name"
+      [globalFilterFields]="[
+        'name',
+        'lastModificationDate',
+        'producer',
+        'itemStatus.statusName',
+        'conditionId'
+      ]"
     >
+      <!-- Nagłówek tabeli -->
+
+      <ng-template pTemplate="caption" class="flex">
+        <!-- Wyszukiwarka -->
+
+        <div class="flex">
+          <div class="flex mr-2">
+            <p-iconField iconPosition="right" class="ml-auto">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input
+                #textInput
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal(textInput.value, 'contains')"
+                placeholder="Wyszukaj..."
+              />
+            </p-iconField>
+          </div>
+
+          <!-- Filtr statusów -->
+
+          <div class="mr-2">
+            <p-columnFilter
+              field="itemStatus.statusId"
+              matchMode="contains"
+              [showMenu]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-name
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [options]="itemStatuses.slice(1)"
+                  (onChange)="filter($event.value)"
+                  optionValue="statusId"
+                  placeholder="Wybierz status"
+                  showClear="true"
+                >
+                  <ng-template let-option pTemplate="selectedItem">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="itemStatuses[option.statusId || 1].color"
+                    >
+                      <div>
+                        <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template let-option pTemplate="item">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="itemStatuses[option.statusId || 1].color"
+                    >
+                      <div
+                        [class]="itemStatuses[option.statusId || 1].icon"
+                        class="flex align-items-center justify-content-center"
+                      ></div>
+                      <div>
+                        : <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+
+          <!-- Filtr stanów -->
+
+          <div>
+            <p-columnFilter
+              field="conditionId"
+              matchMode="contains"
+              [showMenu]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-name
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [options]="conditionStates.slice(1)"
+                  (onChange)="filter($event.value)"
+                  optionValue="conditionId"
+                  placeholder="Wybierz stan"
+                  showClear="true"
+                >
+                  <ng-template let-option pTemplate="selectedItem">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        conditionStates[option.conditionId || 1].color
+                      "
+                    >
+                      <div>
+                        <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template let-option pTemplate="item">
+                    <div
+                      class="flex flex-row"
+                      [style.color]="
+                        conditionStates[option.conditionId || 1].color
+                      "
+                    >
+                      <div
+                        [class]="conditionStates[option.conditionId || 1].icon"
+                        class="flex align-items-center justify-content-center"
+                      ></div>
+                      <div>
+                        : <i>{{ option.name }}</i>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+
+          <!-- Przyciski  -->
+
+          <div class="flex w-full justify-content-end">
+            <p-button
+              *ngIf="selectedRowItem?.itemStatus?.statusId != 1"
+              class="mx-2"
+              label=""
+              icon="pi pi-shopping-cart"
+              (onClick)="showSaleOrHandoverDialog()"
+              [disabled]="
+                !selectedRowItem || selectedRowItem.itemStatus.statusId == 3
+              "
+            />
+
+            <p-button
+              *ngIf="selectedRowItem?.itemStatus?.statusId == 1"
+              class="mx-2"
+              label=""
+              icon="pi pi-money-bill"
+              (onClick)="showSaleOrHandoverDialog()"
+              [disabled]="
+                !selectedRowItem || selectedRowItem.itemStatus.statusId == 3
+              "
+            />
+
+            <p-dialog
+              header="Formularz sprzedażowy"
+              [(visible)]="saleFormVisible"
+              [modal]="true"
+            >
+              <app-sale-form
+                [itemForSale]="itemForAction"
+                [priceSuggestion]="priceSuggestion"
+                [handoverMode]="
+                  false || selectedRowItem && selectedRowItem.itemStatus.statusId == 1
+                "
+              />
+            </p-dialog>
+
+            <p-button
+              *ngIf="selectedRowItem?.itemStatus?.statusId == 1"
+              class="mx-2"
+              label=""
+              icon="pi pi-calendar-plus"
+              (onClick)="showExtensionDialog()"
+              [disabled]="
+                !selectedRowItem || selectedRowItem.itemStatus.statusId == 3
+              "
+            />
+
+            <p-dialog
+              header="Formularz przedłużania zastawu"
+              [(visible)]="extensionFormVisible"
+              [modal]="true"
+            >
+            </p-dialog>
+
+            <p-button
+              class="mx-2"
+              label=""
+              icon="pi pi-pen-to-square"
+              (onClick)="showEditDialog()"
+              [disabled]="!selectedRowItem"
+            />
+
+            <p-dialog
+              header="Edytuj towar"
+              [(visible)]="editFormVisibile"
+              [modal]="true"
+            >
+              <app-add-item-form
+                [editMode]="true"
+                [itemForEdit]="itemForAction"
+              />
+            </p-dialog>
+
+            <p-button
+              class="mx-2"
+              icon="pi pi-trash"
+              [disabled]="!selectedRowItem"
+              (onClick)="confirmDelete($event)"
+            />
+
+            <p-confirmDialog #cd>
+              <ng-template pTemplate="headless" let-message>
+                <div
+                  class="flex flex-column align-items-center p-5 surface-overlay border-round"
+                >
+                  <div
+                    class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem"
+                  >
+                    <i class="pi pi-exclamation-triangle text-5xl"></i>
+                  </div>
+                  <span class="font-bold text-2xl block mb-2 mt-4">
+                    {{ message.header }}
+                  </span>
+                  <p class="mb-0">{{ message.message }}</p>
+                  <div class="flex align-items-center gap-2 mt-4">
+                    <button
+                      pButton
+                      label="Usuń"
+                      (click)="cd.accept()"
+                      class="w-8rem"
+                    ></button>
+                    <button
+                      pButton
+                      label="Anuluj"
+                      (click)="cd.reject()"
+                      class="p-button-outlined w-8rem"
+                    ></button>
+                  </div>
+                </div>
+              </ng-template>
+            </p-confirmDialog>
+
+            <p-button
+              class="mx-2"
+              label=""
+              icon="pi pi-history"
+              [disabled]="!selectedRowItem"
+              (onClick)="nagivateToItemHistory()"
+            />
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="header">
         <tr class="align-items-center">
           <th></th>
-          <th>Nazwa</th>
-          <th>Status</th>
+          <th pSortableColumn="name">Nazwa<p-sortIcon field="name" /></th>
+          <th pSortableColumn="itemStatus.statusId">
+            Status<p-sortIcon field="itemStatus.statusId" />
+          </th>
           <th>Producent</th>
-          <th>Data ostatniej modyfikacji</th>
-          <th>Stan</th>
+          <th pSortableColumn="lastModificationDate">
+            Data ostatniej modyfikacji<p-sortIcon
+              field="lastModificationDate"
+            />
+          </th>
+          <th pSortableColumn="conditionId">
+            Stan
+            <p-sortIcon field="conditionId" />
+          </th>
           <th>Opis</th>
-        </tr>
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
         </tr>
       </ng-template>
 
@@ -119,19 +301,26 @@
             <i class="pi pi-angle-right"></i>
           </td>
           <td class="w-2">{{ itemRegister.name }}</td>
-          <td class="w-1rem">
+          <td
+            class="w-1rem"
+            [ariaValueNow]="itemRegister.itemStatus.statusName"
+          >
             <i
               [class]="itemStatuses[itemRegister.itemStatus.statusId || 1].icon"
               [style.color]="
                 itemStatuses[itemRegister.itemStatus.statusId || 1].color
               "
-            ></i>
+            >
+            </i>
           </td>
           <td class="w-2">{{ itemRegister.producer }}</td>
           <td class="w-2">
             {{ itemRegister.lastModificationDate | date : "yyyy-MM-dd" }}
           </td>
-          <td class="w-1rem">
+          <td
+            class="w-1rem"
+            [ariaValueNow]="itemRegister.conditionId"
+          >
             <i
               [class]="conditionStates[itemRegister.conditionId || 0].icon"
               [style.color]="

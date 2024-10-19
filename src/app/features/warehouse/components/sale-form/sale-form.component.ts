@@ -27,6 +27,8 @@ import { Item, ItemForSale as ItemForSale } from '../../../add/models/addItem';
 import { mapSaleFormToItemForSale } from '../../../add/services/add-form-mappers';
 import { Router, RouterModule } from '@angular/router';
 import { RoundValueDirective } from '../../../../shared/directives/round-to.directive';
+import { ItemRegister } from '../../models/item-register.model';
+import { WarehouseService } from '../../services/warehouse.service';
 
 @Component({
   selector: 'app-sale-form',
@@ -49,7 +51,9 @@ import { RoundValueDirective } from '../../../../shared/directives/round-to.dire
   styleUrl: './sale-form.component.css',
 })
 export class SaleFormComponent implements OnInit, OnChanges {
-  @Input() itemForSale?: Item;
+  @Input() itemForSale?: ItemRegister;
+  @Input() priceSuggestion?: number;
+  @Input() handoverMode?: boolean;
 
   saleForm: FormGroup;
 
@@ -60,7 +64,7 @@ export class SaleFormComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private errorMessageService: ErrorMessageService,
-    private addService: AddService,
+    private warehouse: WarehouseService,
     private router: Router
   ) {
     this.saleForm = this.fb.group({
@@ -73,8 +77,16 @@ export class SaleFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.saleForm)
-      this.saleForm.get('name')?.setValue(this.itemForSale?.name);
+    this.saleForm.get('name')?.setValue(this.itemForSale?.name);
+    const transactionField = this.saleForm.get('transactionAmount');
+    
+    if (this.handoverMode) {
+      transactionField?.setValue(this.priceSuggestion);
+      this.getPersonForItem()
+    } else {
+      transactionField?.setValue(null);
+      this.saleForm.get('person')?.setValue(null);
+    }
   }
 
   onSubmitSale(): void {
@@ -82,12 +94,10 @@ export class SaleFormComponent implements OnInit, OnChanges {
       const item: ItemForSale = mapSaleFormToItemForSale(
         this.saleForm.value,
         this.selectedPerson.personId,
-        this.itemForSale?.id || 0,
+        this.itemForSale?.id || 0
       );
 
-      debugger
-
-      this.addService.updateItemSell(item).subscribe({
+      this.warehouse.updateItemSell(item).subscribe({
         next: (response: ItemForSale) => {
           console.log('Item added successfully', response);
           this.router.navigate(['/']);
@@ -109,6 +119,23 @@ export class SaleFormComponent implements OnInit, OnChanges {
         });
       }
     }
+  }
+
+  getPersonForItem() {
+    debugger
+    this.warehouse.getPersonForItem(this.itemForSale?.id || 0).subscribe({
+      next: (personsForSearch: PersonForSearch) => {
+        this.selectedPerson = personsForSearch;
+        this.saleForm
+          .get('person')
+          ?.setValue(
+            this.selectedPerson.name + ' ' + this.selectedPerson.surname
+          );
+      },
+      error: (err: any) => console.error('Observable emitted an error: ' + err),
+      complete: () =>
+        console.log('Observable emitted the complete notification'),
+    });
   }
 
   openPersonsForSearch() {

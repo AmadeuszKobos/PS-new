@@ -2,6 +2,10 @@
   padding: 0.5rem;
 }
 
+::ng-deep .p-datatable-header {
+  padding: 0.7rem;
+}
+
 ::ng-deep .p-button {
   margin-top: 1%;
 }

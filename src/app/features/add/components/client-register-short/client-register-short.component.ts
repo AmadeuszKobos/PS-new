@@ -24,7 +24,7 @@ import { PersonForSearch } from '../../models/Persons.model';
 })
 export class ClientRegisterShortComponent {
   @Output() valueChanged = new EventEmitter<PersonForSearch>();
-  
+
   personsForSearch: PersonForSearch[] = [];
 
   searchValue: string = '';
@@ -49,6 +49,6 @@ export class ClientRegisterShortComponent {
   }
 
   selectPerson() {
-    this.valueChanged.emit(this.selectedPerson)
+    this.valueChanged.emit(this.selectedPerson);
   }
 }

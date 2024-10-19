@@ -11,8 +11,9 @@ export class AddService {
   constructor(private apiService: ApiService) {}
 
   addClient(clientData: Person): Observable<any> {
+    debugger
     return this.apiService.post(
-      '/PersonContoller/AddOrUpdatePerson',
+      '/Person/AddOrUpdatePerson',
       clientData
     );
   }
@@ -22,10 +23,8 @@ export class AddService {
   }
 
   getPersonsForSearch(searchValue: string): Observable<PersonForSearch[]> {
-    return this.apiService.get('/PersonContoller/GetPersonsForSearch', { searchValue: searchValue });
+    return this.apiService.get('/Person/GetPersonsForSearch', { searchValue: searchValue });
   }
 
-  updateItemSell(itemForSale: ItemForSale): Observable<any> {
-    return this.apiService.post('/Item/UpdateItemSell', itemForSale);
-  }
+
 }

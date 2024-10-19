@@ -1,77 +1,7 @@
 <div class="h-full p-3">
   <p-panel class="min-h-screen" header="Kartoteka">
-    <div class="flex w-full algin-items-end justify-content-end">
-      <p-button
-        class="m-2"
-        icon="pi pi-unlock"
-        [disabled]="!selectedClient"
-        (onClick)="confirmBlacklistAction($event)"
-      />
-
-      <p-confirmDialog #cd>
-        <ng-template pTemplate="headless" let-message>
-          <div
-            class="flex flex-column align-items-center p-5 surface-overlay border-round"
-          >
-            <div
-              class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem"
-            >
-              <i class="pi {{ message.icon }} text-5xl"></i>
-            </div>
-            <span class="font-bold text-2xl block mb-2 mt-4">
-              {{ message.header }}
-            </span>
-            <p class="mb-0">{{ message.message }}</p>
-            <div class="flex align-items-center gap-2 mt-4">
-              <button
-                pButton
-                label="Zablokuj"
-                (click)="cd.accept()"
-                class="w-8rem"
-              ></button>
-              <button
-                pButton
-                label="Anuluj"
-                (click)="cd.reject()"
-                class="p-button-outlined w-8rem"
-              ></button>
-            </div>
-          </div>
-        </ng-template>
-      </p-confirmDialog>
-
-      <p-button
-        class="m-2"
-        label=""
-        icon="pi pi-pen-to-square"
-        (onClick)="showDialog()"
-        [disabled]="!selectedClient"
-      />
-
-      <p-dialog
-        header="Edytuj dane klienta"
-        [(visible)]="visible"
-        [modal]="true"
-      >
-        <app-client-form />
-      </p-dialog>
-
-      <p-button
-        class="m-2"
-        icon="pi pi-folder-open"
-        [disabled]="!selectedClient"
-        (onClick)="confirmArchiveAction($event)"
-      />
-
-      <p-button
-        class="m-2"
-        icon="pi pi-list"
-        [disabled]="!selectedClient"
-        (onClick)="navigateToClientHistory()"
-      />
-    </div>
-
     <p-table
+      #dt
       [value]="personsRegister"
       selectionMode="single"
       stateStorage="session"
@@ -83,12 +13,129 @@
       styleClass="p-datatable-gridlines"
       [scrollable]="true"
       [paginator]="true"
+      sortField="name"
+      [globalFilterFields]="[
+        'name',
+        'phoneNumber',
+        'email',
+      ]"
     >
+      <ng-template pTemplate="caption" class="flex">
+        <!-- Wyszukiwarka -->
+
+        <div class="flex">
+          <div class="flex mr-2">
+            <p-iconField iconPosition="right" class="ml-auto">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input
+                #textInput
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal(textInput.value, 'contains')"
+                placeholder="Wyszukaj..."
+              />
+            </p-iconField>
+          </div>
+
+          <!-- Filtr stanu blokady -->
+          <div class="flex align-items-center">
+            <p-columnFilter
+              id="blackListFlagFilter"
+              type="boolean"
+              field="blacklistFlag"
+              [showClearButton]="false"
+              class="mr-2"
+            />
+            <label class="text-xs" for="blacklistFlagFilter"
+              >Możliwość transakcji</label
+            >
+          </div>
+
+          <!-- Przyciski -->
+
+          <div class="flex w-full algin-items-end justify-content-end">
+            <p-button
+              class="mx-2"
+              icon="pi pi-unlock"
+              [disabled]="!selectedClient"
+              (onClick)="confirmBlacklistAction($event)"
+            />
+
+            <p-confirmDialog #cd>
+              <ng-template pTemplate="headless" let-message>
+                <div
+                  class="flex flex-column align-items-center p-5 surface-overlay border-round"
+                >
+                  <div
+                    class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem"
+                  >
+                    <i class="pi {{ message.icon }} text-5xl"></i>
+                  </div>
+                  <span class="font-bold text-2xl block mb-2 mt-4">
+                    {{ message.header }}
+                  </span>
+                  <p class="mb-0">{{ message.message }}</p>
+                  <div class="flex align-items-center gap-2 mt-4">
+                    <button
+                      pButton
+                      label="Zablokuj"
+                      (click)="cd.accept()"
+                      class="w-8rem"
+                    ></button>
+                    <button
+                      pButton
+                      label="Anuluj"
+                      (click)="cd.reject()"
+                      class="p-button-outlined w-8rem"
+                    ></button>
+                  </div>
+                </div>
+              </ng-template>
+            </p-confirmDialog>
+
+            <p-button
+              class="mx-2"
+              label=""
+              icon="pi pi-pen-to-square"
+              (onClick)="showEditDialog()"
+              [disabled]="!selectedClient"
+            />
+
+            <p-dialog
+              header="Edytuj dane klienta"
+              [(visible)]="visible"
+              [modal]="true"
+            >
+              <app-client-form
+                [editMode]="true"
+                [PersonForEdit]="personForEdit"
+              />
+            </p-dialog>
+
+            <p-button
+              class="mx-2"
+              icon="pi pi-folder-open"
+              [disabled]="!selectedClient"
+              (onClick)="confirmArchiveAction($event)"
+            />
+
+            <p-button
+              class="mx-2"
+              icon="pi pi-list"
+              [disabled]="!selectedClient"
+              (onClick)="navigateToClientHistory()"
+            />
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="header">
         <tr>
           <th></th>
-          <th class="w-3">Imię i nazwisko</th>
-          <th class="w-1">Zastawione rzeczy</th>
+          <th class="w-3" pSortableColumn="name">Imię i nazwisko<p-sortIcon field="name" /></th>
+          <th class="w-1" pSortableColumn="pawned">Zastawione rzeczy<p-sortIcon field="pawned" /></th>
           <th class="w-2">Email</th>
           <th class="w-2">Numer telefonu</th>
           <th class="w-1">Możliwość transkacji</th>

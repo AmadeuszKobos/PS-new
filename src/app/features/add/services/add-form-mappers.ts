@@ -1,22 +1,23 @@
 import { OperationTypeEnum } from "../../../shared/Enums/operation-type-enum.model";
 import { Address, Person } from "../models/Persons.model";
-import { Item, ItemForSale } from "../models/addItem";
+import { Item, ItemForSale, ItemHistory } from "../models/addItem";
 
-export function mapClientFormToClient(clientFormValue: any): Person {
+export function mapClientFormToClient(clientFormValue: any, addressId: number, personId: number): Person {
     return {
+      personId: personId,
       name: clientFormValue.name,
       surname: clientFormValue.surname,
       personalNumber: clientFormValue.personalNumber,
       phoneNumber: clientFormValue.phoneNumber,
       emailAddress: clientFormValue.emailAddress,
-
+      addressId: addressId,
       address: mapAddressFormToAddress(clientFormValue)
     };
   }
   
 export function mapAddressFormToAddress(addressFormValue: any): Address {
   return {
-    country: addressFormValue.country,
+    country: addressFormValue.country.name,
     city: addressFormValue.city,
     street: addressFormValue.street,
     postalCode: addressFormValue.postalCode
@@ -29,12 +30,23 @@ export function mapItemFormToItem(itemFormValue: any, personId: number, id: numb
     id: id,
     name: itemFormValue.name,
     producer: itemFormValue.producer,
-    notes: itemFormValue.description,
-    transactionAmount: itemFormValue.transactionAmount,
     days: itemFormValue.days,
-    personId: personId,
+    history: mapItemFormToItemHisotry(itemFormValue, personId)
+  }
+}
+
+
+export function mapItemFormToItemHisotry(itemFormValue: any, personId: number): ItemHistory {
+  return {
+    id: 0,
+    operationDate: undefined,
+    transactionAmount: itemFormValue.transactionAmount,
+    notes: itemFormValue.notes,
     conditionId: itemFormValue.conditionId,
-    operationTypeId: itemFormValue.operationType
+    itemId: 0,
+    userId: 0,
+    personId: personId,
+    operationId: itemFormValue.operationId
   }
 }
 
