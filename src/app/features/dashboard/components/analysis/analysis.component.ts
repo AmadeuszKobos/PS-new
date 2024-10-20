@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
 import { FieldsetModule } from 'primeng/fieldset';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { DashboardService } from '../../services/dashboard.service';
+import { Summary } from '../../models/summary.model';
+import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.model';
 
 @Component({
   selector: 'app-analysis',
@@ -18,34 +21,40 @@ export class AnalysisComponent implements OnInit {
 
   data: any;
 
+  sales?: Summary;
+  purchases?: Summary;
+  pawns?: Summary;
+
   options: any;
 
-  constructor(private fb: FormBuilder){
+  documentStyle = getComputedStyle(document.documentElement);
+
+
+  constructor(private fb: FormBuilder, private dashboardService: DashboardService){
     this.analysisForm = this.fb.group({
-      dateFrom: [],
-      dateTo: [],
+      dateFrom: [new Date(), [Validators.required]],
+      dateTo: [new Date(), [Validators.required]],
       analysisOptions: []
     })
   }
 
   ngOnInit(): void {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColor = this.documentStyle.getPropertyValue('--text-color');
 
     this.data = {
-      labels: ['Zastawy', 'Kupna', 'Sprzedaż'],
+      labels: ['Pobierz', 'Nowe', 'Dane'],
       datasets: [
         {
           data: [1, 1, 1],
           backgroundColor: [
-            documentStyle.getPropertyValue('--blue-500'),
-            documentStyle.getPropertyValue('--yellow-500'),
-            documentStyle.getPropertyValue('--green-500'),
+            this.documentStyle.getPropertyValue('--blue-500'),
+            this.documentStyle.getPropertyValue('--yellow-500'),
+            this.documentStyle.getPropertyValue('--green-500'),
           ],
           hoverBackgroundColor: [
-            documentStyle.getPropertyValue('--blue-400'),
-            documentStyle.getPropertyValue('--yellow-400'),
-            documentStyle.getPropertyValue('--green-400'),
+            this.documentStyle.getPropertyValue('--blue-400'),
+            this.documentStyle.getPropertyValue('--yellow-400'),
+            this.documentStyle.getPropertyValue('--green-400'),
           ],
         },
       ],
@@ -63,22 +72,38 @@ export class AnalysisComponent implements OnInit {
     };
   }
 
-  onSubmitAnalysis(): void {
-    // if (this.clientForm.valid) {
-    //   const client: Client = mapClientFormToClient(this.clientForm.value);
+  getAnalysis(): void {
+    this.dashboardService.getSummariesByDateRange(new Date(this.analysisForm.value.dateFrom).toISOString(), new Date(this.analysisForm.value.dateTo).toISOString(), false).subscribe({
+      next: (summaries: Summary[]) => {
+        this.sales = summaries.find(x => x.operationId == OperationTypeEnum.Sale)
+        this.purchases = summaries.find(x => x.operationId == OperationTypeEnum.Purchase)
+        this.pawns = summaries.find(x => x.operationId == OperationTypeEnum.Pawn)
+        
+        debugger
 
-    //   this.addService.addClient(client).subscribe({
-    //     next: (response: Client) => {
-    //       console.log('Client added successfully', response);
-    //       this.router.navigate(['/']);
-    //     },
-    //     error: (error: string) => {
-    //       console.error('There was an error!', error);
-    //     },
-    //   });
-    // } else {
-    //   console.log('Client Form is not valid');
-    //   this.clientForm.markAllAsTouched();
-    // }
+        this.data = {
+          labels: ['Zastawy', 'Kupna', 'Sprzedaż'],
+          datasets: [
+            {
+              data: [this.pawns?.totalTransactionAmount, this.purchases?.totalTransactionAmount, this.sales?.totalTransactionAmount],
+              backgroundColor: [
+                this.documentStyle.getPropertyValue('--blue-500'),
+                this.documentStyle.getPropertyValue('--yellow-500'),
+                this.documentStyle.getPropertyValue('--green-500'),
+              ],
+              hoverBackgroundColor: [
+                this.documentStyle.getPropertyValue('--blue-400'),
+                this.documentStyle.getPropertyValue('--yellow-400'),
+                this.documentStyle.getPropertyValue('--green-400'),
+              ],
+            },
+          ],
+        };
+
+      },
+      error: (err: any) => console.error('Observable emitted an error: ' + err),
+      complete: () =>
+        console.log('Sprzedaż: ' + this.sales + ' Zastawy: ' + this.pawns + ' zakup ' + this.purchases),
+    })
   }
 }

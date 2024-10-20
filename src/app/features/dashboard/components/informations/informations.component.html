@@ -5,8 +5,8 @@
       *ngFor="let info of informations"
     >
       <div class="w-10">
-        <p-fieldset legend="{{info.topic}}">
-            {{info.content | slice:0:100}}...
+        <p-fieldset legend="{{info.type}}">
+            {{info.content | slice:0:100}}
         </p-fieldset>
       </div>
     </div>

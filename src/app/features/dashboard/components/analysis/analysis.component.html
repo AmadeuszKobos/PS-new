@@ -4,7 +4,7 @@
 
 <div class="flex flex-column flex-grow-1 align-items-end justify-items-end">
   <div class="text-xs xl:text-base">
-    <form [formGroup]="analysisForm" (ngSubmit)="onSubmitAnalysis()">
+    <form [formGroup]="analysisForm">
       <div>
         <label for="dateFrom" class="font-bold block mb-2"> Data od: </label>
         <p-calendar
@@ -25,17 +25,16 @@
         />
       </div>
 
-
       <div class="flex justify-content-end">
-        <button
-          pButton
-          type="submit"
+        <p-button
           label="Pobierz dane"
-          [disabled]="analysisForm.invalid"
+          (onClick)="getAnalysis()"
+          class="mt-2 md:text-xs"
           class="mt-2 text-sm"
           icon="pi pi-database"
           size="small"
-        ></button>
+          [disabled]="analysisForm.invalid"
+        ></p-button>
       </div>
     </form>
   </div>

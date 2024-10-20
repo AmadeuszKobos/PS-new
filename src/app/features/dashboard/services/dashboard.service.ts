@@ -14,7 +14,7 @@ export class DashboardService {
 
   // SummaryController API
 
-  getSummariesByDateRange(startDate: Date, endDate: Date, getAll: boolean): Observable<Summary[]> {
+  getSummariesByDateRange(startDate: string, endDate: string, getAll: boolean): Observable<Summary[]> {
     return this.apiService.get('/Summary/GetSummariesByDateRange', { startDate: startDate,  endDate: endDate, getAll: getAll});
   }
 
