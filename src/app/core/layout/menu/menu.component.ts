@@ -1,5 +1,5 @@
 import { Component, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
@@ -7,6 +7,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { AuthService } from '../../auth/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DialogModule } from 'primeng/dialog';
+import { PdfGeneratorComponent } from '../../../shared/components/pdf-generator/pdf-generator.component';
 
 @Component({
   standalone: true,
@@ -14,11 +16,13 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css'],
   imports: [
-    CommonModule,
-    RouterModule,
-    MenuModule,
     AvatarModule,
     ButtonModule,
+    CommonModule,
+    DialogModule,
+    PdfGeneratorComponent,
+    RouterModule,
+    MenuModule,
     OverlayPanelModule,
   ],
 })
@@ -26,6 +30,10 @@ export class MenuComponent {
   items: MenuItem[] = [];
 
   menuWrapped: boolean = false;
+
+  pdfGeneratorVisibility: boolean = false;
+
+  wrapText: string = ''
 
   constructor(private authService: AuthService) {}
 
@@ -54,7 +62,7 @@ export class MenuComponent {
         routerLink: '/records',
       },
       {
-        label: 'Ustawienia',
+        label: 'AdminPanel',
         icon: 'pi pi-cog',
         routerLink: '/settings',
       },
@@ -62,6 +70,11 @@ export class MenuComponent {
         label: 'Wyloguj się',
         icon: 'pi pi-sign-out',
         command: () => this.logout(),
+      },
+      {
+        label: '',
+        icon: 'pi pi-bars',
+        command: () => this.toggleMenu(),
       },
     ];
   }
@@ -74,6 +87,10 @@ export class MenuComponent {
       this.menuWrapped = true;
       localStorage.setItem('menuState', 'wrapped');
     }
+  }
+
+  showPdfGenerator() {
+    this.pdfGeneratorVisibility = true;
   }
 
   logout() {

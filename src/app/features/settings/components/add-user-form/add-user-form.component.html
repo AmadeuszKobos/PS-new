@@ -1,0 +1,32 @@
+<div class="col grid align-items-center row-gap-2 p-3 w-7">
+  <header class="font-bold">Wybierz osobę:</header>
+</div>
+<div>
+  <input
+    pInputText
+    placeholder="Naciśnij, aby wyszukać osobę"
+    formControlName="person"
+    tooltipPosition="bottom"
+    (click)="showClientRegisterShort()"
+    [readonly]="true"
+  />
+
+  <p-dialog
+    header="Wyszukaj osobę"
+    [modal]="true"
+    position="top"
+    [(visible)]="clientRegisterShortVisible"
+    [style]="{ width: '90rem' }"
+  >
+    <app-client-register-short (valueChanged)="onPersonSelect($event)" />
+  </p-dialog>
+</div>
+<div class="mt-2">
+  <p-button
+    class=""
+    icon="pi pi-user-plus"
+    iconPos="right"
+    label="Generuj konto"
+    
+  />
+</div>

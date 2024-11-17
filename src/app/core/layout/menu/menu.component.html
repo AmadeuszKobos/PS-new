@@ -1,3 +1,11 @@
+<p-dialog
+  header="Generuj umowę"
+  [(visible)]="pdfGeneratorVisibility"
+  [modal]="true"
+>
+  <app-pdf-generator />
+</p-dialog>
+
 <div
   class="relative flex flex-column h-full"
   [ngClass]="{
@@ -26,13 +34,13 @@
       ></p-menu>
     </div>
     <div class="w-full flex align-items-center justify-content-evenly p-2">
-      <p-button
+      <!-- <p-button
         [ngClass]=""
         icon="pi pi-bars"
         [rounded]="true"
         severity="secondary"
         (onClick)="toggleMenu()"
-      />
+      /> -->
     </div>
   </div>
 
@@ -60,21 +68,26 @@
 
     <ng-template #optionsWrapped>
       <div class="w-full flex align-items-center justify-content-evenly p-2">
-        <p-button icon="pi pi-ellipsis-v" (onClick)="ow.toggle($event)" severity="secondary"/>
+        <p-button
+          icon="pi pi-ellipsis-v"
+          (onClick)="ow.toggle($event)"
+          severity="secondary"
+        />
       </div>
 
       <p-overlayPanel #ow>
         <div class="w-full flex align-items-center justify-content-evenly">
+          <p-button icon="pi pi-info-circle" [rounded]="true" severity="info" />
+
           <p-button
-            icon="pi pi-info-circle"
+            icon="pi pi-file-pdf"
             [rounded]="true"
-            severity="info"
+            severity="success"
+            (onClick)="showPdfGenerator()"
           />
 
-          <p-button icon="pi pi-google" [rounded]="true" severity="success" />
-
           <p-button
-            icon="pi pi-stopwatch"
+            icon="pi pi-pencil"
             [rounded]="true"
             severity="warning"
           />

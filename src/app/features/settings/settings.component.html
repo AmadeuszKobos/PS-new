@@ -1,1 +1,127 @@
-<p>settings works!</p>
+<div class="h-full p-3">
+  <p-panel class="min-h-screen" header="Panel administracyjny">
+    <div class="flex gap-1">
+      <!-- Add user -->
+      <div>
+        <p-button
+          label="Dodaj użytkownika"
+          [rounded]="true"
+          (onClick)="showAddUserDialog()"
+        />
+      </div>
+
+      <p-dialog
+        header="Dodaj nowego użytkownika"
+        [(visible)]="addUserVisibility"
+        [modal]="true"
+      >
+      <app-add-user-form/>
+
+      </p-dialog>
+
+      <!-- Add information -->
+      <div>
+        <p-button label="Dodaj ogłoszenie" [rounded]="true" />
+      </div>
+    </div>
+
+    <p-divider />
+    <!-- Manage users -->
+    <div>
+      <p-table
+        #dt
+        [value]="users"
+        [first]="first"
+        [rows]="rows"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        selectionMode="single"
+        [(selection)]="selectedRowUser"
+        stateStorage="session"
+        [totalRecords]="users.length"
+        styleClass="p-datatable-gridlines"
+        [scrollable]="true"
+        [paginator]="true"
+      >
+        <ng-template pTemplate="caption" class="flex">
+          <!-- Wyszukiwarka -->
+
+          <div class="flex">
+            <div class="flex mr-2">
+              <p-iconField iconPosition="right" class="ml-auto">
+                <p-inputIcon>
+                  <i class="pi pi-search"></i>
+                </p-inputIcon>
+                <input
+                  #textInput
+                  pInputText
+                  type="text"
+                  (input)="dt.filterGlobal(textInput.value, 'contains')"
+                  placeholder="Wyszukaj..."
+                />
+              </p-iconField>
+            </div>
+
+            <!-- Przyciski -->
+
+            <div class="flex w-full algin-items-end justify-content-end">
+              <p-button
+                class="mx-2"
+                icon="pi pi-unlock"
+                [disabled]="!selectedRowUser"
+                (onClick)="changeUserBlockState()"
+              />
+
+              <p-button
+                class="mx-2"
+                label=""
+                icon="pi pi-pen-to-square"
+                [disabled]="!selectedRowUser"
+              />
+
+              <p-dialog header="Edytuj dane klienta" [modal]="true"> </p-dialog>
+
+              <p-button
+                class="mx-2"
+                icon="pi pi-folder-open"
+                [disabled]="!selectedRowUser"
+              />
+
+              <p-button
+                class="mx-2"
+                icon="pi pi-list"
+                [disabled]="!selectedRowUser"
+              />
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <th class="w-2">Login użytkownika</th>
+            <th class="w-3" pSortableColumn="name">Imię i nazwisko</th>
+            <th class="w-2">Numer telefonu</th>
+            <th class="w-3">Ostatnie logowanie</th>
+            <th class="w-3">Użytkownik zablokowany</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-personRegister>
+          <tr [pSelectableRow]="personRegister">
+            <td class="w-1rem surface-100">
+              <i class="pi pi-angle-right"></i>
+            </td>
+            <td>{{ personRegister.username }}</td>
+            <td>{{ personRegister.name }}</td>
+            <td>{{ personRegister.phoneNumber }}</td>
+            <td>{{ personRegister.lastLogin | date : "dd-MM-yyyy, h:mm" }}</td>
+            <td>{{ personRegister.blocked }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <p-divider />
+    <!-- Add info -->
+    <div></div>
+  </p-panel>
+</div>

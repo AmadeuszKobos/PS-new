@@ -10,7 +10,6 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
-  FormControl,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AddService } from '../../services/add.service';
@@ -115,29 +114,27 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     });
 
     // Blokowanie pól dla różnych operacji
-    this.itemForm
-      .get('operationId')
-      ?.valueChanges.subscribe((operationId) => {
-        const daysControl = this.itemForm.get('days');
+    this.itemForm.get('operationId')?.valueChanges.subscribe((operationId) => {
+      const daysControl = this.itemForm.get('days');
 
-        if (operationId === OperationTypeEnum.Pawn) {
-          daysControl?.setValidators([Validators.required]);
-          daysControl?.enable();
-        } else {
-          daysControl?.removeValidators([Validators.required]);
-          daysControl?.disable();
-          daysControl?.setValue('');
-        }
+      if (operationId === OperationTypeEnum.Pawn) {
+        daysControl?.setValidators([Validators.required]);
+        daysControl?.enable();
+      } else {
+        daysControl?.removeValidators([Validators.required]);
+        daysControl?.disable();
+        daysControl?.setValue('');
+      }
 
-        daysControl?.updateValueAndValidity();
-      });
+      daysControl?.updateValueAndValidity();
+    });
 
     if (this.editMode) {
       this.itemForm.get('person')?.disable();
       this.itemForm.get('days')?.disable();
       this.itemForm.get('transactionAmount')?.disable();
 
-      this.itemForm.get('operationId')?.setValue(OperationTypeEnum.Update)
+      this.itemForm.get('operationId')?.setValue(OperationTypeEnum.Update);
     }
   }
 
@@ -160,24 +157,33 @@ export class AddItemFormComponent implements OnInit, OnChanges {
   }
 
   onSubmitItem() {
-    console.log(this.itemForm)
+    console.log(this.itemForm);
 
     if (this.itemForm.valid) {
       const item: Item = mapItemFormToItem(
         this.itemForm.value,
         this.selectedPerson?.personId || 0,
-        this.itemForEdit?.id || 0,
+        this.itemForEdit?.id || 0
       );
 
-      debugger
+      debugger;
 
       this.addService.addItem(item).subscribe({
         next: (response: Item) => {
           console.log('Item added successfully', response);
-          this.router.navigate(['/']);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Pomyślnie dodano przedmiot',
+            detail: 'Znajdziesz przedmiot w rejestrze',
+          });
+          this.router.navigate(['/add']);
         },
         error: (error: string) => {
-          console.error('There was an error!', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Dodawanie nie powiodło się',
+            detail: 'Sprawdź wprowadzone informacje',
+          });
         },
       });
     } else {

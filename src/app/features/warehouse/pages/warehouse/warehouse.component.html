@@ -182,7 +182,8 @@
                 [itemForSale]="itemForAction"
                 [priceSuggestion]="priceSuggestion"
                 [handoverMode]="
-                  false || selectedRowItem && selectedRowItem.itemStatus.statusId == 1
+                  false ||
+                  (selectedRowItem && selectedRowItem.itemStatus.statusId == 1)
                 "
               />
             </p-dialog>
@@ -317,10 +318,7 @@
           <td class="w-2">
             {{ itemRegister.lastModificationDate | date : "yyyy-MM-dd" }}
           </td>
-          <td
-            class="w-1rem"
-            [ariaValueNow]="itemRegister.conditionId"
-          >
+          <td class="w-1rem" [ariaValueNow]="itemRegister.conditionId">
             <i
               [class]="conditionStates[itemRegister.conditionId || 0].icon"
               [style.color]="

@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { NotificationService } from '../../../../shared/notification/notification.service';
 
 @Component({
   standalone: true,
@@ -32,7 +33,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -40,7 +42,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
@@ -50,12 +53,16 @@ export class LoginComponent implements OnInit {
       };
       this.authService.login(formData).subscribe({
         next: (token) => {
-          this.messageService.add({ severity: 'success', summary: 'Pomyślnie zalogowano', detail: 'Witaj {tu wstawić login}'});
+          this.notificationService.addMessage( 'success', 'Pomyślnie zalogowano', 'Witaj A');
+          this.notificationService.flushMessages()
+
           this.router.navigate(['/']);
         },
         error: (error) => {
-          debugger
-          this.messageService.add({ severity: 'error', summary: 'Błąd logowania', detail: 'Niepoprawna nazwa użytkownika lub hasło' });
+          this.notificationService.addMessage( 'error', 'Nie udało się zalogować', error.error);
+          this.notificationService.flushMessages()
+          console.log(error)
+          //this.messageService.add({ severity: 'error', summary: 'Błąd logowania', detail: 'Niepoprawna nazwa użytkownika lub hasło' });
         }
       });
     }

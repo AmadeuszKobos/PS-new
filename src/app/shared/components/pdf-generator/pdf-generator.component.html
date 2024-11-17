@@ -1,0 +1,11 @@
+<div #agreementContent>
+    <app-pawn-contract-template
+      [date]="date"
+      [clientName]="clientName"
+      [clientContact]="clientContact"
+      [itemDescription]="itemDescription"
+      [itemValue]="itemValue">
+    </app-pawn-contract-template>
+  </div>
+  
+  <p-button (click)="generatePDF()">Generuj Umowę PDF</p-button>

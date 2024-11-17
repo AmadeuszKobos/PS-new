@@ -29,6 +29,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ErrorMessageService } from '../../../../shared/services/error-message.service';
 import { InputMaskModule } from 'primeng/inputmask';
 import { CustomValidators } from '../../../../shared/validators/custom-validators';
+import { NotificationService } from '../../../../shared/notification/notification.service';
 
 interface Country {
   name: string;
@@ -55,6 +56,7 @@ interface Country {
   ],
   templateUrl: './client-form.component.html',
   styleUrl: './client-form.component.css',
+  providers: [NotificationService]
 })
 export class ClientFormComponent implements OnInit, OnChanges {
   @Input() editMode: boolean = false;
@@ -73,7 +75,8 @@ export class ClientFormComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private addService: AddService,
     private router: Router,
-    private errorMessageService: ErrorMessageService
+    private errorMessageService: ErrorMessageService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -106,7 +109,7 @@ export class ClientFormComponent implements OnInit, OnChanges {
           Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'),
         ],
       ],
-      country: [countries.find((x) => x.name == 'Poland')],
+      country: [countries.find((x) => x.name == 'Polska')],
       city: [''],
       street: [''],
       postalCode: [''],
@@ -136,11 +139,11 @@ export class ClientFormComponent implements OnInit, OnChanges {
 
       this.addService.addClient(client).subscribe({
         next: (response: Person) => {
-          console.log('Client added successfully', response);
+          this.notificationService.showSuccess('Dodawanie pomyślnie', 'Dodano nowego klienta do bazy')
           this.router.navigate(['/']);
         },
         error: (error: string) => {
-          console.error('There was an error!', error);
+          this.notificationService.showError('Błąd podczas dodawania', error);
         },
       });
     } else {
