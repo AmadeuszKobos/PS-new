@@ -1,14 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DashboardService } from '../../services/dashboard.service';
-
 
 @Component({
   selector: 'app-notes',
   standalone: true,
-  imports: [InputTextareaModule, ReactiveFormsModule, ButtonModule, FormsModule],
+  imports: [
+    InputTextareaModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    FormsModule,
+  ],
   templateUrl: './notes.component.html',
   styleUrls: ['./notes.component.css', '../../dashboard.component.css'],
 })
@@ -32,7 +41,7 @@ export class NotesComponent implements OnInit {
   }
 
   updateUserNotes() {
-    debugger
+    debugger;
     this.dashboardService.updateUserNotes(this.notesContent).subscribe({
       next: () => {
         console.log('Trwa aktualizowane');

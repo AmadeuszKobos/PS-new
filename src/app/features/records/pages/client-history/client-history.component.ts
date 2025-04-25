@@ -33,8 +33,8 @@ import { DropdownModule } from 'primeng/dropdown';
 export class ClientHistoryComponent implements OnInit {
   personHistories: ItemHistoryRegister[] = [];
 
-  personName =
-    this.personHistories.length > 0 ? this.personHistories[0] : 'BRAK HISTORII';
+  personName: string = "";
+    
 
   conditionStates = conditionStates;
   operationTypes = operationTypes;
@@ -53,6 +53,7 @@ export class ClientHistoryComponent implements OnInit {
       next: (personHistories: ItemHistoryRegister[]) => {
         console.log('Pobrane dane:', personHistories); // Sprawdź, czy dane są pobierane
         this.personHistories = personHistories;
+        this.personName = this.personHistories.length > 0 ? this.personHistories[0].person : 'BRAK HISTORII';
       },
       error: (err: any) => console.error('Observable emitted an error: ' + err),
       complete: () =>

@@ -110,7 +110,6 @@ export class AddItemFormComponent implements OnInit, OnChanges {
       transactionAmount: ['', [Validators.required]],
       days: ['', [Validators.required]],
       person: ['', [Validators.required]],
-      // uploadImage: [],
     });
 
     // Blokowanie pól dla różnych operacji
@@ -154,6 +153,7 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     this.itemForm
       .get('person')
       ?.setValue(this.selectedPerson.name + ' ' + this.selectedPerson.surname);
+      debugger
   }
 
   onSubmitItem() {
@@ -162,11 +162,10 @@ export class AddItemFormComponent implements OnInit, OnChanges {
     if (this.itemForm.valid) {
       const item: Item = mapItemFormToItem(
         this.itemForm.value,
-        this.selectedPerson?.personId || 0,
+        this.selectedPerson?.personId || 1,
         this.itemForEdit?.id || 0
       );
 
-      debugger;
 
       this.addService.addItem(item).subscribe({
         next: (response: Item) => {
@@ -177,6 +176,7 @@ export class AddItemFormComponent implements OnInit, OnChanges {
             detail: 'Znajdziesz przedmiot w rejestrze',
           });
           this.router.navigate(['/add']);
+          this.itemForm.reset();
         },
         error: (error: string) => {
           this.messageService.add({

@@ -9,6 +9,9 @@ import { ButtonModule } from 'primeng/button';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { PdfGeneratorComponent } from '../../../shared/components/pdf-generator/pdf-generator.component';
+import { TemporaryNotesComponent } from '../../../shared/components/temporary-notes/temporary-notes.component';
+import { FaqListComponent } from '../../../shared/components/faq-list/faq-list.component';
+import { UsefulWebsitesComponent } from '../../../shared/components/useful-websites/useful-websites.component';
 
 @Component({
   standalone: true,
@@ -23,7 +26,10 @@ import { PdfGeneratorComponent } from '../../../shared/components/pdf-generator/
     PdfGeneratorComponent,
     RouterModule,
     MenuModule,
+    TemporaryNotesComponent,
     OverlayPanelModule,
+    FaqListComponent,
+    UsefulWebsitesComponent,
   ],
 })
 export class MenuComponent {
@@ -32,8 +38,10 @@ export class MenuComponent {
   menuWrapped: boolean = false;
 
   pdfGeneratorVisibility: boolean = false;
+  tempNotesVisibility: boolean = false;
+  faqVisibility: boolean = false;
 
-  wrapText: string = ''
+  wrapText: string = '';
 
   constructor(private authService: AuthService) {}
 
@@ -91,6 +99,14 @@ export class MenuComponent {
 
   showPdfGenerator() {
     this.pdfGeneratorVisibility = true;
+  }
+
+  showTemporaryNotes() {
+    this.tempNotesVisibility = true;
+  }
+
+  showFaq() {
+    this.faqVisibility = true;
   }
 
   logout() {

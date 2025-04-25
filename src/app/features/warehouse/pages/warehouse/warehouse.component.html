@@ -39,6 +39,8 @@
                 type="text"
                 (input)="dt.filterGlobal(textInput.value, 'contains')"
                 placeholder="Wyszukaj..."
+                pTooltip="Wyszukaj po: nazwie, producencie, opisie"
+                tooltipPosition="bottom"
               />
             </p-iconField>
           </div>
@@ -155,6 +157,8 @@
               *ngIf="selectedRowItem?.itemStatus?.statusId != 1"
               class="mx-2"
               label=""
+              pTooltip="Sprzedaj"
+              tooltipPosition="bottom"
               icon="pi pi-shopping-cart"
               (onClick)="showSaleOrHandoverDialog()"
               [disabled]="
@@ -188,30 +192,16 @@
               />
             </p-dialog>
 
-            <p-button
-              *ngIf="selectedRowItem?.itemStatus?.statusId == 1"
-              class="mx-2"
-              label=""
-              icon="pi pi-calendar-plus"
-              (onClick)="showExtensionDialog()"
-              [disabled]="
-                !selectedRowItem || selectedRowItem.itemStatus.statusId == 3
-              "
-            />
 
-            <p-dialog
-              header="Formularz przedłużania zastawu"
-              [(visible)]="extensionFormVisible"
-              [modal]="true"
-            >
-            </p-dialog>
 
             <p-button
               class="mx-2"
               label=""
               icon="pi pi-pen-to-square"
               (onClick)="showEditDialog()"
-              [disabled]="!selectedRowItem"
+              [disabled]="
+                !selectedRowItem || selectedRowItem.itemStatus.statusId == 3
+              "
             />
 
             <p-dialog
@@ -324,6 +314,7 @@
               [style.color]="
                 conditionStates[itemRegister.conditionId || 0].color
               "
+              [pTooltip]="conditionStates[itemRegister.conditionId || 0].name"
             ></i>
           </td>
           <td

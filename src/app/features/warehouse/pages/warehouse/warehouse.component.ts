@@ -21,6 +21,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
 import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.model';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-warehouse',
@@ -37,6 +38,7 @@ import { OperationTypeEnum } from '../../../../shared/Enums/operation-type-enum.
     PaginatorModule,
     TableModule,
     TagModule,
+    TooltipModule,
     IconFieldModule,
     InputTextModule,
     SaleFormComponent,
@@ -82,7 +84,6 @@ export class WarehouseComponent implements OnInit {
   }
 
   GetItemPriceSuggestion() {
-    
     this.warehouseService
     .GetItemPriceSuggestion(
       this.selectedRowItem.id,

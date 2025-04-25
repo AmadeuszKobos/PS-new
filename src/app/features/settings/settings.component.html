@@ -15,14 +15,52 @@
         [(visible)]="addUserVisibility"
         [modal]="true"
       >
-      <app-add-user-form/>
-
+        <app-add-user-form />
       </p-dialog>
 
       <!-- Add information -->
       <div>
-        <p-button label="Dodaj ogłoszenie" [rounded]="true" />
+        <p-button
+          label="Dodaj ogłoszenie"
+          [rounded]="true"
+          (onClick)="showAddInformationDialog()"
+        />
       </div>
+
+      <p-dialog
+        header="Dodaj ogłoszenie"
+        [(visible)]="addInformationVisibility"
+        [modal]="true"
+      >
+        <div class="col">
+          <div>
+            <input pInputText
+              optionValue="conditionId"
+              placeholder="Podaj typ informacji"
+              showClear="true"
+            />
+            
+          </div>
+
+          <div>
+            <textarea
+              rows="5"
+              cols="30"
+              pInputTextarea
+              [(ngModel)]="information"
+            ></textarea>
+          </div>
+
+          <div>
+            <p-button
+              label="Dodaj ogłoszenie"
+              [rounded]="true"
+              (onClick)="showAddInformationDialog()"
+            >
+            </p-button>
+          </div>
+        </div>
+      </p-dialog>
     </div>
 
     <p-divider />

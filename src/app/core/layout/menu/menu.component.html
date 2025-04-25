@@ -6,6 +6,32 @@
   <app-pdf-generator />
 </p-dialog>
 
+<p-dialog
+  [style]="{ width: '45rem' }"
+  header="Notatki tymczasowe"
+  [(visible)]="faqVisibility"
+  [modal]="true"
+>
+  <app-temporary-notes />
+</p-dialog>
+
+<p-dialog
+  [style]="{ width: '45rem' }"
+  header="Przydatne linki"
+  [(visible)]="tempNotesVisibility"
+  [modal]="true"
+>
+</p-dialog>
+
+<p-dialog
+  [style]="{ width: '45rem' }"
+  header="Przydatne strony"
+  [(visible)]="tempNotesVisibility"
+  [modal]="true"
+>
+  <app-useful-websites />
+</p-dialog>
+
 <div
   class="relative flex flex-column h-full"
   [ngClass]="{
@@ -22,7 +48,7 @@
         <p-avatar label="A" size="xlarge" styleClass=""></p-avatar>
       </div>
       <div class="flex profile-info">
-        <p *ngIf="!menuWrapped">Witaj, Amadeusz 👋</p>
+        <p *ngIf="!menuWrapped">Witaj, Admin 👋</p>
       </div>
     </div>
     <div>
@@ -77,10 +103,15 @@
 
       <p-overlayPanel #ow>
         <div class="w-full flex align-items-center justify-content-evenly">
-          <p-button icon="pi pi-info-circle" [rounded]="true" severity="info" />
+          <p-button
+            icon="pi pi-info-circle"
+            [rounded]="true"
+            severity="info"
+            (onClick)="showFaq()"
+          />
 
           <p-button
-            icon="pi pi-file-pdf"
+            icon="pi pi-globe"
             [rounded]="true"
             severity="success"
             (onClick)="showPdfGenerator()"
@@ -90,6 +121,7 @@
             icon="pi pi-pencil"
             [rounded]="true"
             severity="warning"
+            (onClick)="showTemporaryNotes()"
           />
         </div>
       </p-overlayPanel>

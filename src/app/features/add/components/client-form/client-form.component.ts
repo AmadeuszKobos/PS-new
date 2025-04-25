@@ -131,6 +131,12 @@ export class ClientFormComponent implements OnInit, OnChanges {
 
   onSubmitClient(): void {
     if (this.clientForm.valid) {
+      debugger
+
+      this.clientForm.get('name')?.enable();
+      this.clientForm.get('surname')?.enable();
+      this.clientForm.get('personalNumber')?.enable();
+
       const client: Person = mapClientFormToClient(
         this.clientForm.value,
         this.PersonForEdit?.addressId || 0,
@@ -140,7 +146,8 @@ export class ClientFormComponent implements OnInit, OnChanges {
       this.addService.addClient(client).subscribe({
         next: (response: Person) => {
           this.notificationService.showSuccess('Dodawanie pomyślnie', 'Dodano nowego klienta do bazy')
-          this.router.navigate(['/']);
+          this.clientForm.reset();
+          this.router.navigate(['/add']);
         },
         error: (error: string) => {
           this.notificationService.showError('Błąd podczas dodawania', error);
